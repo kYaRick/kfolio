@@ -1,0 +1,60 @@
+.loader-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    overflow: hidden;
+}
+
+.loader-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+}
+
+.loader-logo {
+    font-size: 2rem;
+    font-weight: bold;
+    letter-spacing: 0.2rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+    text-shadow: 0 0 20px var(--accent-color);
+
+    &::before {
+        content: "kFolio";
+    }
+}
+
+.loader-bar {
+    width: 250px;
+    height: 2px;
+    background: var(--bg-accent);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 0 auto 0.5rem;
+}
+
+.loader-progress {
+    /* Blazor updates --blazor-load-percentage automaticly */
+    width: var(--blazor-load-percentage, 0%);
+    height: 100%;
+    background: var(--accent-color);
+    box-shadow: 0 0 15px var(--accent-color);
+    transition: width 0.4s ease-in-out;
+}
+
+.loader-text {
+    font-family: monospace;
+    font-size: 0.9rem;
+    color: var(--accent-color);
+
+    &:after {
+        content: var(--blazor-load-percentage-text, 0%);
+    }
+}

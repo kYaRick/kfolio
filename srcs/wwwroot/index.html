@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="/" />
+    <title>kfolio</title>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="preload" id="webassembly" />
+
+    <!-- Styles -->
+    <link href="favicon.ico" rel="icon" />
+
+    <link rel="stylesheet" href="styles/themes.css" />
+    <link rel="stylesheet" href="styles/startup-loader.css" />
+    <link rel="stylesheet" href="styles/errors.css" />
+    <link rel="stylesheet" href="styles/app.css" />
+
+    <link href="kfolio.styles.css" rel="stylesheet" />
+
+    <!-- Init maps before others scripts thas should use JS modules -->
+    <script type="importmap"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div class="loader-wrapper">
+            <div class="bg-container">
+                <div class="shape blob-1"></div>
+                <div class="shape blob-2"></div>
+                <div class="shape blob-3"></div>
+            </div>
+
+            <div class="loader-content">
+                <div class="loader-logo"/>
+                <div class="loader-bar">
+                    <div class="loader-progress"></div>
+                </div>
+                <span id="loading-progress-text" class="loader-text" />
+            </div>
+        </div>
+    </div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="." class="reload">Reload</a>
+        <span class="dismiss">🗙</span>
+    </div>
+
+    <script src="scripts/theme.js"></script>
+    <script src="_framework/blazor.webassembly#[.{fingerprint}].js"></script>
+</body>
+
+</html>

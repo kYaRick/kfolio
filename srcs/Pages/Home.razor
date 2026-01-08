@@ -1,0 +1,132 @@
+﻿@page "/"
+
+@using kfolio.Services
+@inject ThemeService ThemeService
+
+<div class="cv-wrapper" data-theme="@currentTheme">
+    <div class="theme-switcher">
+        <button class="theme-btn @(currentTheme == "dark" ? "active" : "")" @onclick="@(async () => await SetTheme("dark"))" title="Dark">🌑</button>
+        <button class="theme-btn @(currentTheme == "light" ? "active" : "")" @onclick="@(async () => await SetTheme("light"))" title="Light">☀️</button>
+        <button class="theme-btn @(currentTheme == "holiday-winter" ? "active" : "")" @onclick="@(async () => await SetTheme("holiday-winter"))" title="Holiday">❄️</button>
+    </div>
+
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="container">
+        <header class="cv-header glass-panel">
+            <div class="header-layout">
+                <div class="header-photo">
+                    <img src="assets/photo.jpg" alt="@CvData.Name" onerror="this.style.display='none'" />
+                </div>
+                <div class="header-content">
+                    <h1>@CvData.Name</h1>
+                    <h2>@CvData.Title</h2>
+                    <p class="summary">@CvData.Summary</p>
+
+                    <div class="contact-grid">
+                        <a href="mailto:@CvData.Email">📧 @CvData.Email</a>
+                        <a href="https://@CvData.Telegram" target="_blank">✈️ Telegram</a>
+                        <a href="https://@CvData.LinkedIn" target="_blank">🔗 LinkedIn</a>
+                        <a href="https://@CvData.GitHub" target="_blank">💻 GitHub</a>
+                        <span>📍 @CvData.Location</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-grid">
+            <aside class="sidebar">
+                <div class="section glass-panel">
+                    <h3>🛠 Tech Stack</h3>
+                    <div class="tags">
+                        @foreach (var skill in CvData.Skills)
+                        {
+                            <span class="tag" style="background: @CvData.GetColor(skill)">@skill</span>
+                        }
+                    </div>
+                </div>
+
+                <div class="section glass-panel">
+                    <h3>🎓 Education</h3>
+                    <ul class="compact-list">
+                        @foreach (var edu in CvData.Education)
+                        {
+                            <li>
+                                <div style="display:flex; flex-direction:column; width:100%">
+                                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.2rem;">
+                                        <h4 style="margin:0; font-size: 1rem;">@edu.Degree</h4>
+                                        <span class="year">@edu.Year</span>
+                                    </div>
+                                    <span style="font-size: 0.85rem; opacity: 0.8;">@edu.Institution</span>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+
+                <div class="section glass-panel">
+                    <h3>🗣 Languages</h3>
+                    <ul class="compact-list">
+                        @foreach (var lang in CvData.Languages)
+                        {
+                            <li>
+                                <span style="font-size: 1.2rem;">@lang.Flag</span>
+                                <span style="font-weight:600;">@lang.Name</span>
+                                <span style="margin-left:auto; font-size:0.8rem; opacity:0.8; background:rgba(255,255,255,0.1); padding:2px 6px; border-radius:4px;">@lang.Level</span>
+                            </li>
+                        }
+                    </ul>
+                </div>
+
+                <div class="section glass-panel">
+                    <h3>🧩 Interests</h3>
+                    <div class="interests-tags">
+                        @foreach (var interest in CvData.Interests)
+                        {
+                            <span class="int-tag">@interest</span>
+                        }
+                    </div>
+                </div>
+            </aside>
+
+            <main class="content">
+                <div class="section glass-panel">
+                    <h3>🚀 Experience</h3>
+                    @foreach (var job in CvData.Experience)
+                    {
+                        <div class="job-card">
+                            <div class="job-header">
+                                <h4>@job.Role</h4>
+                                <span class="company">@job.Company</span>
+                                <span class="dates">@job.Period</span>
+                            </div>
+                            <ul class="duties">
+                                @foreach (var duty in job.Duties)
+                                {
+                                    <li>@duty</li>
+                                }
+                            </ul>
+                            @if (job.TechStack.Any())
+                            {
+                                <div class="mini-tags">
+                                    @foreach (var tech in job.TechStack)
+                                    {
+                                        <span style="background: @CvData.GetColor(tech)">@tech</span>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </main>
+        </div>
+
+        <footer class="footer">
+            Made with ❤️ to 🇺🇦
+        </footer>
+    </div>
+</div>
