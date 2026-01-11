@@ -106,7 +106,7 @@ body {
 
     .sidebar {
         padding-right: 0;
-        padding-bottom: 2rem;
-        margin-bottom: 2rem;
+        padding-bottom: 0;
+        margin-bottom: 0;
     }
-}}
+}

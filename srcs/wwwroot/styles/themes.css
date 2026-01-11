@@ -33,3 +33,74 @@
     --blob-color-2: #00b4d8;
     --blob-color-3: #90e0ef;
 }
+
+.theme-switcher {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 10;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    gap: 0;
+    align-items: center;
+    padding: .35rem;
+    transition: width 0.3s ease, gap .3s ease;
+    width: 3.2rem;
+    overflow: hidden;
+
+    &.open {
+        width: auto;
+        gap: .25rem;
+        flex-direction: row;
+    }
+
+    @media (hover: hover) {
+        &:hover {
+            width: auto;
+            gap: .25rem;
+            flex-direction: row;
+        }
+    }
+}
+
+.theme-btn {
+    --sel-bg-color: color-mix(in srgb, var(--accent-color), transparent 50%);
+    
+    background: transparent;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: .4rem;
+    border-radius: 50%;
+    transition: transform .2s, background-color .2s;
+    line-height: 1;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    opacity: .7;
+
+    &:hover {
+        background-color: rgba(255,255,255,0.1);
+        transform: scale(1.1);
+        opacity: 1;
+    }
+
+    &.active {
+        background-color: var(--sel-bg-color);
+        color: #fff;
+        opacity: 1;
+        box-shadow: 0 0 .2rem var(--sel-bg-color);
+        display: flex;
+    }
+}
+
+.theme-switcher.open .theme-btn {
+    display: flex;
+}
+
+@media (hover: hover) {
+    .theme-switcher:hover .theme-btn {
+        display: flex;
+    }
+}
