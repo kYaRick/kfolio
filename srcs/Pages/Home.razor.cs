@@ -18,6 +18,7 @@ public partial class Home
         currentTheme = theme;
         await ThemeService.SetAsync(theme);
     }
+
     private static class CvData
     {
         public static string Name = "Yaroslav Kyliushyk";

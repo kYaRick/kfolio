@@ -9,61 +9,6 @@
     transition: background-color var(--transition-speed), color var(--transition-speed);
 }
 
-.background-blobs {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    pointer-events: none;
-    overflow: hidden;
-}
-
-.blob {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.6;
-    animation: float 10s infinite ease-in-out alternate;
-}
-
-.blob-1 {
-    width: 500px;
-    height: 500px;
-    background: var(--blob-color-1);
-    top: -100px;
-    left: -100px;
-}
-
-.blob-2 {
-    width: 400px;
-    height: 400px;
-    background: var(--blob-color-2);
-    bottom: 20%;
-    right: -50px;
-    animation-delay: -2s;
-}
-
-.blob-3 {
-    width: 300px;
-    height: 300px;
-    background: var(--blob-color-3);
-    bottom: -50px;
-    left: 30%;
-    animation-delay: -4s;
-}
-
-@keyframes float {
-    0% {
-        transform: translate(0, 0);
-    }
-
-    100% {
-        transform: translate(30px, 50px);
-    }
-}
-
 .container {
     max-width: 1200px;
     margin: 0 auto;

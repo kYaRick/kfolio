@@ -41,4 +41,20 @@
             });
         }
     });
+
+    function handleScroll() {
+        const btn = document.querySelector('.scroll-to-top');
+        if (btn) {
+            const scrolled = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
+            if (scrolled > 100) {
+                btn.classList.add('visible');
+            } else {
+                btn.classList.remove('visible');
+            }
+        }
+    }
+
+    window.addEventListener('scroll', handleScroll);
+    // Initial check
+    setTimeout(handleScroll, 500);
 })();
