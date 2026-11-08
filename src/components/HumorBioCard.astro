@@ -1,0 +1,92 @@
+---
+import { useT } from '@/i18n/ui';
+import type { Lang } from '@/lib/site';
+import Icon from './Icon.astro';
+
+interface Props {
+  humor: {
+    lightbulb: { q: string; a: string };
+    deadLanguages: string[];
+    bio: string;
+    realityDisclaimer: string;
+  };
+  interests: string[];
+  lang: Lang;
+}
+
+const { humor, interests, lang } = Astro.props;
+const t = useT(lang);
+---
+
+<section class="card humor-bio-card" aria-label="Short Bio & Humor">
+  <div class="card-title">
+    <div style="display: flex; align-items: center; gap: 6px;">
+      <Icon name="sparkles" size={15} />
+      <span>{t('humor.title')}</span>
+    </div>
+    <span style="font-size: 10px; color: var(--accent-gold);">HUMAN LAYER</span>
+  </div>
+
+  <!-- Lightbulb Joke (Interactive Terminal Spoiler) -->
+  <div class="joke-box">
+    <div class="joke-question">
+      <Icon name="sparkles" size={13} />
+      <span>{humor.lightbulb.q}</span>
+    </div>
+
+    <!-- Lightbulb Joke (Interactive Terminal Spoiler for Screen) -->
+    <details class="joke-spoiler screen-only-joke">
+      <summary class="joke-spoiler-toggle">
+        <span style="display: inline-flex; align-items: center; gap: 6px;">
+          <Icon name="sparkles" size={12} />
+          <span>{t('humor.reveal')}</span>
+        </span>
+        <span class="joke-chevron" style="display: inline-flex; align-items: center;">
+          <Icon name="chevron-down" size={12} />
+        </span>
+      </summary>
+
+      <div class="joke-punchline">
+        &gt; {humor.lightbulb.a}
+      </div>
+    </details>
+
+    <!-- Always visible in Print / PDF Export -->
+    <div class="joke-punchline print-only-joke" aria-hidden="true">
+      &gt; {humor.lightbulb.a}
+    </div>
+  </div>
+
+  <!-- Bio Paragraph -->
+  <p style="font-size: 12px; color: var(--text-main); line-height: 1.5;">
+    {humor.bio}
+  </p>
+
+  <div style="font-size: 11.5px; color: var(--accent-amber); font-style: italic;">
+    {humor.realityDisclaimer}
+  </div>
+
+  <!-- Dead Languages -->
+  <div style="margin-top: 0.3rem;">
+    <span style="font-size: 11px; color: var(--accent-dim); font-weight: 700; display: block; margin-bottom: 4px;">
+      {t('humor.deadLanguages')}
+    </span>
+    <div class="tags-wrap">
+      {humor.deadLanguages.map((langItem) => (
+        <span class="tag" style="opacity: 0.75; font-size: 10.5px;">{langItem}</span>
+      ))}
+    </div>
+  </div>
+
+  <!-- Personal Interests -->
+  <div style="margin-top: 0.3rem;">
+    <span style="font-size: 11px; color: var(--accent-dim); font-weight: 700; display: block; margin-bottom: 4px;">
+      {t('humor.hobbies')}
+    </span>
+    <div class="tags-wrap">
+      {interests.map((interest) => (
+        <span class="tag" style="background: var(--bg-subtle); font-size: 10.5px;">{interest}</span>
+      ))}
+    </div>
+  </div>
+</section>

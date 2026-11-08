@@ -1,0 +1,104 @@
+---
+import { useT } from '@/i18n/ui';
+import { Image } from 'astro:assets';
+import type { Lang } from '@/lib/site';
+import Icon from './Icon.astro';
+import PixelTryzub from './PixelTryzub.astro';
+
+interface Props {
+  name: string;
+  title: string;
+  avatar: ImageMetadata;
+  motto: string;
+  sessionHost: string;
+  status: string;
+  experienceYears: number;
+  location: string;
+  lang: Lang;
+}
+
+const {
+  name,
+  title,
+  avatar,
+  motto,
+  sessionHost,
+  status,
+  experienceYears,
+  location,
+  lang
+} = Astro.props;
+const t = useT(lang);
+---
+
+<section class="card identity-card" aria-label="Identity and Agent Core">
+  <div class="card-title">
+    <div style="display: flex; align-items: center; gap: 6px;">
+      <Icon name="user" size={15} />
+      <span>{t('identity.title')}</span>
+    </div>
+    <span style="font-size: 10px; color: var(--accent-amber); font-weight: 600;">{experienceYears}+ YRS EXP</span>
+  </div>
+
+  <!-- Clean Photo Avatar with Hover Accent -->
+  <div class="avatar-status-wrapper">
+    <div
+      class="avatar-badge-container"
+      data-avatar-fx
+      data-hint-pixel={t('identity.photoHover')}
+      data-hint-halftone={t('identity.photoHover')}
+      data-hint-frost={t('identity.photoWipe')}
+    >
+      <Image src={avatar} alt={name} class="avatar-img" width={640} height={640} widths={[320, 640]} sizes="(max-width: 768px) 100vw, 320px" format="webp" quality={80} loading="eager" />
+      <canvas class="avatar-fx" aria-hidden="true"></canvas>
+    </div>
+
+    <div class="identity-titles">
+      <h1>{name}</h1>
+      <h2>{title}</h2>
+    </div>
+  </div>
+
+  <!-- Stand With Ukraine Ribbon & Tryzub Emblem -->
+  <div class="ua-row">
+    <div class="ua-tryzub-tile" title={t('identity.emblem')} aria-label="Державний Герб України">
+      <PixelTryzub size={20} />
+    </div>
+    <a href="https://u24.gov.ua/" target="_blank" rel="noopener noreferrer" class="ua-badge" title={t('identity.united24')}>
+      <span class="ua-blue">STAND WITH UKRAINE</span>
+      <span style="color: var(--text-muted);">·</span>
+      <span class="ua-yellow">FREEDOM</span>
+    </a>
+  </div>
+
+  <div class="motto-banner">
+    <em>"{motto}"</em>
+  </div>
+
+  <div class="key-value-list">
+    <div class="kv-row">
+      <span class="kv-key">{t('identity.platform')}</span>
+      <span class="kv-value" style="color: var(--accent-amber); font-weight: 700;">kfolio // core</span>
+    </div>
+    <div class="kv-row">
+      <span class="kv-key">Builder:</span>
+      <span class="kv-value" style="color: var(--text-white); font-weight: 600;">{name}</span>
+    </div>
+    <div class="kv-row">
+      <span class="kv-key">{t('identity.location')}</span>
+      <span class="kv-value">{location}</span>
+    </div>
+    <div class="kv-row">
+      <span class="kv-key">Host:</span>
+      <span class="kv-value">{sessionHost}</span>
+    </div>
+    <div class="kv-row">
+      <span class="kv-key">Status:</span>
+      <span class="kv-value" style="color: var(--status-ok); font-weight: 700;">{status}</span>
+    </div>
+  </div>
+</section>
+
+<script>
+  import '@/scripts/avatar-fx';
+</script>

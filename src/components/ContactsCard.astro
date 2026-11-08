@@ -1,0 +1,132 @@
+---
+import { useT } from '@/i18n/ui';
+import type { Lang } from '@/lib/site';
+import Icon from './Icon.astro';
+
+interface Props {
+  contacts: {
+    email: string;
+    telegram: string;
+    linkedin: string;
+    github: string;
+    twitter?: string;
+    bluesky?: string;
+    instagram?: string;
+    location: string;
+  };
+  lang: Lang;
+}
+
+const { contacts, lang } = Astro.props;
+const t = useT(lang);
+---
+
+<section class="card contacts-card" aria-label="Direct Endpoints">
+  <div class="card-title">
+    <div style="display: flex; align-items: center; gap: 6px;">
+      <Icon name="mail" size={15} />
+      <span>{t('contacts.title')}</span>
+    </div>
+    <span style="font-size: 10px; color: var(--status-ok);">ONLINE</span>
+  </div>
+
+  <div class="key-value-list">
+    <div class="kv-row contact-endpoint-row">
+      <span class="kv-key">email:</span>
+      <div class="contact-value-group">
+        <a href={`mailto:${contacts.email}`} style="color: var(--text-white); font-weight: 600;">{contacts.email}</a>
+        <button type="button" class="copy-btn" data-copy={contacts.email} title={t('contacts.copyEmail')} aria-label="Copy email">
+          <Icon name="copy" size={12} />
+          <span class="copy-tooltip">{t('contacts.copied')}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="kv-row contact-endpoint-row">
+      <span class="kv-key">telegram:</span>
+      <div class="contact-value-group">
+        <a href={`https://${contacts.telegram}`} target="_blank" rel="noopener noreferrer">{contacts.telegram}</a>
+        <button type="button" class="copy-btn" data-copy={`https://${contacts.telegram}`} title={t('contacts.copyLink', { name: 'Telegram' })} aria-label="Copy Telegram">
+          <Icon name="copy" size={12} />
+          <span class="copy-tooltip">{t('contacts.copied')}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="kv-row contact-endpoint-row">
+      <span class="kv-key">linkedin:</span>
+      <div class="contact-value-group">
+        <a href={`https://${contacts.linkedin}`} target="_blank" rel="noopener noreferrer">linkedin.com/in/kyarick</a>
+        <button type="button" class="copy-btn" data-copy={`https://${contacts.linkedin}`} title={t('contacts.copyLink', { name: 'LinkedIn' })} aria-label="Copy LinkedIn">
+          <Icon name="copy" size={12} />
+          <span class="copy-tooltip">{t('contacts.copied')}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="kv-row contact-endpoint-row">
+      <span class="kv-key">github:</span>
+      <div class="contact-value-group">
+        <a href={`https://${contacts.github}`} target="_blank" rel="noopener noreferrer">github.com/kYaRick</a>
+        <button type="button" class="copy-btn" data-copy={`https://${contacts.github}`} title={t('contacts.copyLink', { name: 'GitHub' })} aria-label="Copy GitHub">
+          <Icon name="copy" size={12} />
+          <span class="copy-tooltip">{t('contacts.copied')}</span>
+        </button>
+      </div>
+    </div>
+
+    {contacts.bluesky && (
+      <div class="kv-row contact-endpoint-row">
+        <span class="kv-key">bluesky:</span>
+        <div class="contact-value-group">
+          <a href={`https://${contacts.bluesky}`} target="_blank" rel="noopener noreferrer">@kyarick.bsky.social</a>
+          <button type="button" class="copy-btn" data-copy={`https://${contacts.bluesky}`} title={t('contacts.copyLink', { name: 'Bluesky' })} aria-label="Copy Bluesky">
+            <Icon name="copy" size={12} />
+            <span class="copy-tooltip">{t('contacts.copied')}</span>
+          </button>
+        </div>
+      </div>
+    )}
+
+    {contacts.instagram && (
+      <div class="kv-row contact-endpoint-row">
+        <span class="kv-key">instagram:</span>
+        <div class="contact-value-group">
+          <a href={`https://${contacts.instagram}`} target="_blank" rel="noopener noreferrer">@kYaRick</a>
+          <button type="button" class="copy-btn" data-copy={`https://${contacts.instagram}`} title={t('contacts.copyLink', { name: 'Instagram' })} aria-label="Copy Instagram">
+            <Icon name="copy" size={12} />
+            <span class="copy-tooltip">{t('contacts.copied')}</span>
+          </button>
+        </div>
+      </div>
+    )}
+  </div>
+</section>
+
+<script>
+  function setupCopyButtons() {
+    document.querySelectorAll<HTMLElement>('.copy-btn').forEach((btn) => {
+      if (btn.dataset.bound) return;
+      btn.dataset.bound = 'true';
+      btn.addEventListener('click', async () => {
+        const textToCopy = btn.getAttribute('data-copy');
+        if (!textToCopy) return;
+        try {
+          await navigator.clipboard.writeText(textToCopy);
+          btn.classList.add('copied');
+          setTimeout(() => {
+            btn.classList.remove('copied');
+          }, 1800);
+        } catch {
+          btn.classList.add('copied');
+          setTimeout(() => {
+            btn.classList.remove('copied');
+          }, 1800);
+        }
+      });
+    });
+  }
+
+  setupCopyButtons();
+  document.addEventListener('astro:page-load', setupCopyButtons);
+</script>

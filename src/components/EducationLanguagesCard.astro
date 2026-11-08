@@ -1,0 +1,64 @@
+---
+import { useT } from '@/i18n/ui';
+import type { Lang } from '@/lib/site';
+import Icon from './Icon.astro';
+
+interface EducationItem {
+  year: string;
+  degree: string;
+  institution: string;
+}
+
+interface LanguageItem {
+  name: string;
+  level: string;
+  flag?: string;
+}
+
+interface Props {
+  education: EducationItem[];
+  languages: LanguageItem[];
+  lang: Lang;
+}
+
+const { education, languages, lang } = Astro.props;
+const t = useT(lang);
+---
+
+<section class="card edu-lang-card" aria-label="Education and Natural Languages">
+  <div class="card-title">
+    <div style="display: flex; align-items: center; gap: 6px;">
+      <Icon name="graduation" size={15} />
+      <span>{t('education.title')}</span>
+    </div>
+    <span style="font-size: 10px; color: var(--accent-amber);">ACADEMIC LOG</span>
+  </div>
+
+  <!-- Education list -->
+  <div class="timeline" style="gap: 0.8rem;">
+    {education.map((item) => (
+      <div class="job-item">
+        <div class="job-header">
+          <span style="color: var(--text-white); font-weight: 600; font-size: 12px;">{item.degree}</span>
+          <span class="job-period">{item.year}</span>
+        </div>
+        <span style="font-size: 11px; color: var(--text-muted);">{item.institution}</span>
+      </div>
+    ))}
+  </div>
+
+  <!-- Languages -->
+  <div style="margin-top: 0.5rem; border-top: 1px solid var(--border-subtle); padding-top: 0.5rem;">
+    <span style="font-size: 11px; color: var(--accent-dim); font-weight: 700; display: block; margin-bottom: 4px;">
+      {t('education.languages')}
+    </span>
+    <div style="display: flex; gap: 0.8rem; flex-wrap: wrap;">
+      {languages.map((l) => (
+        <div style="background: var(--tag-bg); border: 1px solid var(--tag-border); padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 11.5px; display: flex; align-items: center; gap: 6px;">
+          <span style="font-weight: 700; color: var(--accent-amber);">{l.name}</span>
+          <span style="color: var(--text-muted); font-size: 10.5px;">({l.level})</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

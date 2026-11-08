@@ -1,0 +1,159 @@
+---
+import Icon from './Icon.astro';
+import { useT } from '@/i18n/ui';
+import { pageUrl, type Lang } from '@/lib/site';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useT(lang);
+---
+
+<div class="card nf-card" data-nf-lang={lang} lang={lang}>
+  <div class="card-title nf-title">
+    <div class="nf-title-main">
+      <Icon name="shield" size={16} />
+      <span>{t('notFound.heading')}</span>
+    </div>
+    <span class="nf-code">ERR_RESOURCE_STANDBY</span>
+  </div>
+
+  <div class="nf-terminal">
+    <div class="nf-prompt"><span>kfolio:~$</span> check-resource --status</div>
+    <div class="nf-error">{t('notFound.error')}</div>
+    <div class="nf-notice">{t('notFound.notice')}</div>
+  </div>
+
+  <p class="nf-body">{t('notFound.body')}</p>
+
+  <div class="key-value-list nf-diag">
+    <div class="kv-row"><span class="kv-key">Gateway:</span><span class="kv-value">Astro SSG Router</span></div>
+    <div class="kv-row"><span class="kv-key">Host:</span><span class="kv-value">GitHub Pages · Autonomous</span></div>
+    <div class="kv-row"><span class="kv-key">Status:</span><span class="kv-value nf-amber">Standby / Active Fallback</span></div>
+  </div>
+
+  <div class="nf-actions">
+    <a href={pageUrl(lang)} class="tag nf-btn nf-btn-primary">
+      <Icon name="file-text" size={14} />
+      <span>{t('notFound.home')}</span>
+    </a>
+    <a href={pageUrl(lang, 'blog')} class="tag nf-btn nf-amber">
+      <Icon name="pen-tool" size={14} />
+      <span>{t('notFound.blog')}</span>
+    </a>
+    <a href="https://github.com/kYaRick/kfolio/issues" target="_blank" rel="noopener noreferrer" class="tag nf-btn nf-muted">
+      <Icon name="github" size={14} />
+      <span>{t('notFound.report')}</span>
+    </a>
+  </div>
+</div>
+
+<style>
+  .nf-card {
+    width: 100%;
+    border: 1.5px solid var(--accent-gold);
+    box-shadow: 0 0 24px rgba(255, 215, 0, 0.12);
+    padding: 1.75rem 2rem;
+  }
+
+  .nf-title {
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: 0.75rem;
+  }
+
+  .nf-title-main {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--accent-gold);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  .nf-code {
+    font-size: 10.5px;
+    color: var(--accent-amber);
+    font-family: var(--font-mono);
+  }
+
+  .nf-terminal {
+    background: var(--bg-subtle);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    padding: 0.85rem 1rem;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    margin: 0.5rem 0;
+  }
+
+  .nf-prompt {
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+
+  .nf-prompt span,
+  .nf-amber {
+    color: var(--accent-amber);
+  }
+
+  .nf-error {
+    color: #f87171;
+    line-height: 1.5;
+  }
+
+  .nf-notice {
+    color: var(--text-muted);
+    font-size: 11px;
+    margin-top: 4px;
+  }
+
+  .nf-body {
+    font-size: 13px;
+    color: var(--text-main);
+    line-height: 1.6;
+    margin: 0.5rem 0;
+  }
+
+  .nf-diag {
+    background: var(--bg-subtle);
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    border: 1px solid var(--border-subtle);
+    margin: 0.5rem 0;
+  }
+
+  .nf-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 0.75rem;
+    border-top: 1px solid var(--border-subtle);
+    padding-top: 1rem;
+  }
+
+  .nf-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0.5rem 1rem;
+    font-size: 12px;
+    text-decoration: none;
+  }
+
+  .nf-btn-primary {
+    background: var(--accent-gold);
+    color: var(--btn-active-text);
+    border-color: var(--accent-gold);
+    font-weight: 700;
+  }
+
+  .nf-btn.nf-amber {
+    border-color: var(--accent-amber);
+  }
+
+  .nf-muted {
+    color: var(--text-muted);
+  }
+</style>

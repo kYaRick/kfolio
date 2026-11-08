@@ -1,0 +1,113 @@
+---
+import { useT } from '@/i18n/ui';
+import type { Lang } from '@/lib/site';
+import Icon from './Icon.astro';
+
+interface Props {
+  toolsets: Record<string, string[]>;
+  lang: Lang;
+}
+
+const { toolsets, lang } = Astro.props;
+
+const categoryLabels: Record<string, { en: string; uk: string }> = {
+  dotnet_ui: { en: "dotnet_ui:", uk: "платформа_dotnet:" },
+  systems_os: { en: "systems_os:", uk: "системи_ос:" },
+  ai_models: { en: "ai_models:", uk: "моделі_ші:" },
+  automation: { en: "automation:", uk: "автоматизація:" },
+  ai_infra: { en: "ai_infra:", uk: "інфраструктура_ші:" },
+  web_desktop: { en: "web_desktop:", uk: "веб_та_десктоп:" },
+  special_ops: { en: "special_ops:", uk: "спец_проєкти:" },
+};
+
+const entries = Object.entries(toolsets);
+const primaryCategories = entries.slice(0, 4);
+const extraCategories = entries.slice(4);
+const t = useT(lang);
+---
+
+<section class="card toolsets-card" aria-label="Toolsets and Runtimes">
+  <div class="card-title">
+    <div style="display: flex; align-items: center; gap: 6px;">
+      <Icon name="cpu" size={15} />
+      <span>{t('toolsets.title')}</span>
+    </div>
+    <span style="font-size: 10px; color: var(--accent-amber);">ACTIVE MATRIX</span>
+  </div>
+
+  <div class="toolset-grid">
+    {primaryCategories.map(([key, items]) => {
+      const label = categoryLabels[key]?.[lang] || `${key}:`;
+      return (
+        <div class="toolset-row">
+          <span class="toolset-label">{label}</span>
+          <div class="tags-wrap">
+            {items.map((item) => (
+              <span class="tag" data-tag={item}>{item}</span>
+            ))}
+          </div>
+        </div>
+      );
+    })}
+
+    {extraCategories.length > 0 && (
+      <div class="toolsets-extra-collapse" id="toolsets-extra-wrap">
+        {extraCategories.map(([key, items]) => {
+          const label = categoryLabels[key]?.[lang] || `${key}:`;
+          return (
+            <div class="toolset-row">
+              <span class="toolset-label">{label}</span>
+              <div class="tags-wrap">
+                {items.map((item) => (
+                  <span class="tag" data-tag={item}>{item}</span>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <button
+        type="button"
+        id="btn-toggle-toolsets"
+        class="toolset-expand-btn"
+        data-label-open={t('toolsets.collapse')}
+        data-label-closed={t('toolsets.showMore', { count: extraCategories.length })}
+      >
+        <span class="toolset-chevron" style="display: inline-flex; transition: transform 0.2s ease;">
+          <Icon name="chevron-down" size={12} />
+        </span>
+        <span class="toolset-btn-text">
+          {t('toolsets.showMore', { count: extraCategories.length })}
+        </span>
+      </button>
+    )}
+  </div>
+</section>
+
+<script>
+  function setupToolsetsToggle() {
+    const btn = document.getElementById('btn-toggle-toolsets');
+    const extra = document.getElementById('toolsets-extra-wrap');
+    if (!btn || !extra || btn.dataset.bound) return;
+    btn.dataset.bound = 'true';
+
+    const textSpan = btn.querySelector('.toolset-btn-text');
+    const chevron = btn.querySelector<HTMLElement>('.toolset-chevron');
+
+    btn.addEventListener('click', () => {
+      const isOpen = extra.classList.toggle('open');
+      if (chevron) {
+        chevron.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+      }
+      if (textSpan) {
+        textSpan.textContent = isOpen
+          ? (btn.dataset.labelOpen ?? '')
+          : (btn.dataset.labelClosed ?? '');
+      }
+    });
+  }
+
+  setupToolsetsToggle();
+  document.addEventListener('astro:page-load', setupToolsetsToggle);
+</script>
