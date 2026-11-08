@@ -1,0 +1,62 @@
+---
+// GitHub Pages serves one 404.html for every missing route, so the card is
+// rendered in all languages and an inline script shows the right one.
+import TerminalLayout from '@/layouts/TerminalLayout.astro';
+import NotFoundCard from '@/components/NotFoundCard.astro';
+import { useT } from '@/i18n/ui';
+import { DEFAULT_LANG, LANGS, url } from '@/lib/site';
+
+const t = useT(DEFAULT_LANG);
+const base = url();
+---
+
+<TerminalLayout
+  title={t('notFound.title')}
+  description={t('notFound.description')}
+  lang={DEFAULT_LANG}
+  currentPage="cv"
+>
+  <div class="nf-wrap" id="nf-wrap" data-base={base} data-langs={LANGS.join(',')} data-fallback={DEFAULT_LANG}>
+    {LANGS.map((lang) => <NotFoundCard lang={lang} />)}
+  </div>
+  <script is:inline>
+    (function () {
+      const wrap = document.getElementById('nf-wrap');
+      if (!wrap) return;
+      const base = wrap.dataset.base || '/';
+      const langs = (wrap.dataset.langs || '').split(',');
+      const fromPath = location.pathname.startsWith(base) ? location.pathname.slice(base.length).split('/')[0] : '';
+      const saved = localStorage.getItem('kfolio_lang');
+      const browser = (navigator.language || '').toLowerCase().slice(0, 2);
+      const lang = [fromPath, saved, browser].find((l) => l && langs.includes(l)) || wrap.dataset.fallback;
+      document.documentElement.dataset.nfLang = lang;
+    })();
+  </script>
+</TerminalLayout>
+
+<style is:global>
+  .nf-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  /* Without JS show the default language; with JS show the detected one. */
+  .nf-wrap [data-nf-lang]:not([data-nf-lang='en']) {
+    display: none;
+  }
+
+  html[data-nf-lang] .nf-wrap [data-nf-lang] {
+    display: none;
+  }
+
+  html[data-nf-lang='en'] .nf-wrap [data-nf-lang='en'],
+  html[data-nf-lang='uk'] .nf-wrap [data-nf-lang='uk'] {
+    display: block;
+  }
+</style>

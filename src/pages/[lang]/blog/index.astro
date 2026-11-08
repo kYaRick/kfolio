@@ -1,0 +1,145 @@
+---
+import { useT } from '@/i18n/ui';
+import { getCollection } from 'astro:content';
+import { getCv } from '@/lib/cv';
+import TerminalLayout from '@/layouts/TerminalLayout.astro';
+import Icon from '@/components/Icon.astro';
+import { Image } from 'astro:assets';
+import { byNewest, isoDate, langStaticPaths, postUrl, type Lang } from '@/lib/site';
+
+export const getStaticPaths = langStaticPaths;
+
+const { lang } = Astro.params as { lang: Lang };
+
+const sortedPosts = (await getCollection('blog', ({ data }) => data.lang === lang)).sort(byNewest);
+
+// Collect all unique tags
+const allTags = Array.from(new Set(sortedPosts.flatMap(p => p.data.tags)));
+
+const cv = await getCv(lang);
+const t = useT(lang);
+---
+
+<TerminalLayout
+  title={t('blog.title')}
+  description={t('blog.description')}
+  lang={lang}
+  currentPage="blog"
+>
+  <div class="blog-grid">
+    <!-- Left Sidebar: Author Profile, Tags, Quick Navigation -->
+    <aside class="blog-sidebar">
+      <!-- Author Card -->
+      <div class="card">
+        <div class="card-title">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <Icon name="user" size={15} />
+            <span>{t('blog.author')}</span>
+          </div>
+          <span style="font-size: 10px; color: var(--status-ok);">ACTIVE</span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.85rem;">
+          <div data-avatar-fx="locked" style="position: relative; width: 52px; height: 52px; border-radius: 8px; border: 1.5px solid var(--border-color); overflow: hidden; flex-shrink: 0;">
+            <Image src={cv.avatar} alt={cv.name} width={104} height={104} format="webp" quality={80} style="width: 100%; height: 100%; object-fit: cover;" />
+            <canvas class="avatar-fx" aria-hidden="true"></canvas>
+          </div>
+          <div>
+            <h2 style="font-size: 14px; color: var(--text-white); margin: 0; font-weight: 700;">
+              {cv.name}
+            </h2>
+            <span style="font-size: 11px; color: var(--accent-amber); display: block; margin-top: 2px;">
+              Software Tools Engineer
+            </span>
+          </div>
+        </div>
+
+        <p style="font-size: 11.5px; color: var(--text-muted); line-height: 1.5; margin: 0;">
+          {t('blog.authorBio')}
+        </p>
+      </div>
+
+      <!-- Topics / Tags Card -->
+      <div class="card">
+        <div class="card-title">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <Icon name="sparkles" size={15} />
+            <span>{t('blog.tags')}</span>
+          </div>
+          <span style="font-size: 10px; color: var(--accent-amber);">{allTags.length} TAGS</span>
+        </div>
+
+        <div class="tags-wrap">
+          {allTags.map((tag) => (
+            <span class="tag" style="font-size: 11px;">#{tag}</span>
+          ))}
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content: Dispatches Feed -->
+    <main class="blog-main">
+      <!-- Feed Header -->
+      <div class="card">
+        <div class="card-title">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <Icon name="pen-tool" size={15} />
+            <span>{t('blog.feed')}</span>
+          </div>
+          <span style="font-size: 10px; color: var(--accent-amber);">{sortedPosts.length} POSTS</span>
+        </div>
+
+        <div style="background: var(--bg-subtle); border: 1px solid var(--border-subtle); border-radius: 4px; padding: 0.5rem 0.8rem; font-family: var(--font-mono); font-size: 11.5px;">
+          <span style="color: var(--accent-amber);">kfolio:~$</span>
+          <span style="color: var(--text-white); margin-left: 6px;">ls -la /var/log/dispatches/</span>
+        </div>
+
+        <p style="font-size: 12px; color: var(--text-muted); margin: 0;">
+          {t('blog.feedDesc')}
+        </p>
+      </div>
+
+      <!-- Posts List -->
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
+        {sortedPosts.map((post) => (
+            <article class="card" style="padding: 1.35rem;">
+              <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.5rem;">
+                <h2 style="font-size: 1.15rem; margin: 0; line-height: 1.35;">
+                  <a href={postUrl(post)} style="color: var(--text-white); font-weight: 700;">
+                    {post.data.title}
+                  </a>
+                </h2>
+                <time datetime={post.data.pubDate.toISOString()} style="font-size: 11.5px; color: var(--accent-amber); font-family: var(--font-mono);">
+                  {isoDate(post.data.pubDate)}
+                </time>
+              </div>
+
+              <p style="font-size: 12.5px; color: var(--text-main); line-height: 1.6; margin: 0.5rem 0;">
+                {post.data.description}
+              </p>
+
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.5rem; border-top: 1px solid var(--border-subtle); padding-top: 0.75rem;">
+                <div class="tags-wrap">
+                  {post.data.tags.map((tag) => (
+                    <span class="tag" style="font-size: 10.5px;">#{tag}</span>
+                  ))}
+                </div>
+
+                <a
+                  href={postUrl(post)}
+                  style="color: var(--accent-gold); font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;"
+                >
+                  <span>{t('blog.read')}</span>
+                  <span aria-hidden="true">&gt;</span>
+                </a>
+              </div>
+            </article>
+        ))}
+      </div>
+    </main>
+  </div>
+</TerminalLayout>
+
+<script>
+  import '@/scripts/avatar-fx';
+</script>

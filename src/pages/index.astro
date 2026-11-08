@@ -1,0 +1,31 @@
+---
+// Root redirector: saved language, then browser language, then default.
+import { DEFAULT_LANG, LANGS, pageUrl, url } from '@/lib/site';
+
+const base = url();
+const fallback = pageUrl(DEFAULT_LANG);
+---
+
+<!doctype html>
+<html lang={DEFAULT_LANG}>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Redirecting to kfolio...</title>
+    <link rel="icon" type="image/x-icon" href={url('favicon.ico')} />
+    <script is:inline define:vars={{ base, langs: LANGS, fallbackLang: DEFAULT_LANG }}>
+      const saved = localStorage.getItem('kfolio_lang');
+      const browser = (navigator.language || '').toLowerCase().slice(0, 2);
+      const target = [saved, browser].find((l) => langs.includes(l)) || fallbackLang;
+      window.location.replace(base + target + '/');
+    </script>
+    <noscript><meta http-equiv="refresh" content={`0;url=${fallback}`} /></noscript>
+  </head>
+  <body style="background: #0D1117; color: #FFF8DC; font-family: monospace; display: flex; justify-content: center; align-items: center; height: 100vh;">
+    <p>
+      Redirecting to
+      {LANGS.map((lang, i) => (
+        <>{i > 0 && ' or '}<a href={pageUrl(lang)} style="color: #FFD700;">kfolio / {lang}</a></>
+      ))}...
+    </p>
+  </body>
+</html>

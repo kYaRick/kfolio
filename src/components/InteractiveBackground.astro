@@ -1,0 +1,287 @@
+---
+// Interactive canvas background engine with 4 distinct theme scenes
+---
+
+<canvas id="interactive-bg-canvas" class="interactive-bg-canvas" transition:persist aria-hidden="true"></canvas>
+
+<style>
+  .interactive-bg-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.9;
+    transition: opacity 0.4s ease;
+  }
+
+  @media print {
+    .interactive-bg-canvas {
+      display: none !important;
+    }
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    if (window.__interactiveBgInitialized) return;
+    window.__interactiveBgInitialized = true;
+
+    const canvas = document.getElementById('interactive-bg-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
+    let animId = null;
+    let isEnabled = localStorage.getItem('kfolio_bg_fx') !== 'false';
+
+    const mouse = { x: -1000, y: -1000, active: false };
+
+    // Resize handler
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      initParticles();
+    });
+
+    // Mouse tracking for subtle natural breeze deflection
+    window.addEventListener('mousemove', (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+      mouse.active = true;
+    });
+
+    window.addEventListener('mouseleave', () => {
+      mouse.x = -1000;
+      mouse.y = -1000;
+      mouse.active = false;
+    });
+
+    // Particles list
+    let particles = [];
+
+    function initParticles() {
+      particles = [];
+      const count = Math.min(Math.floor((width * height) / 14000), 85);
+      for (let i = 0; i < count; i++) {
+        const isCrystal = Math.random() < 0.28;
+        particles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * 0.6,
+          vy: Math.random() * 0.9 + 0.6,
+          swayAngle: Math.random() * Math.PI * 2,
+          swaySpeed: Math.random() * 0.02 + 0.01,
+          swayRadius: Math.random() * 0.8 + 0.4,
+          radius: isCrystal ? Math.random() * 2 + 3 : Math.random() * 1.8 + 0.8,
+          alpha: Math.random() * 0.55 + 0.35,
+          isCrystal: isCrystal,
+          rotation: Math.random() * Math.PI * 2,
+          rotSpeed: (Math.random() - 0.5) * 0.02
+        });
+      }
+    }
+
+    initParticles();
+
+    // Helper: draw crisp 6-point ice crystal
+    function drawSnowCrystal(p) {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rotation);
+      ctx.strokeStyle = `rgba(255, 255, 255, ${p.alpha})`;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (let i = 0; i < 6; i++) {
+        ctx.moveTo(0, 0);
+        ctx.lineTo(0, p.radius);
+        if (p.radius > 3.2) {
+          ctx.moveTo(0, p.radius * 0.55);
+          ctx.lineTo(p.radius * 0.25, p.radius * 0.7);
+          ctx.moveTo(0, p.radius * 0.55);
+          ctx.lineTo(-p.radius * 0.25, p.radius * 0.7);
+        }
+        ctx.rotate(Math.PI / 3);
+      }
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function draw() {
+      if (!isEnabled) {
+        ctx.clearRect(0, 0, width, height);
+        return;
+      }
+
+      ctx.clearRect(0, 0, width, height);
+      const theme = document.documentElement.getAttribute('data-theme') || 'hermes-dark';
+
+      if (theme === 'seasonal-winter') {
+        // Natural Gentle Falling Snow Scene
+        ctx.save();
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+
+          // Natural swaying and falling
+          p.swayAngle += p.swaySpeed;
+          p.x += Math.sin(p.swayAngle) * p.swayRadius;
+          p.y += p.vy;
+          p.rotation += p.rotSpeed;
+
+          // Subtle wind deflection near mouse cursor (no weird trails)
+          if (mouse.active) {
+            const dx = p.x - mouse.x;
+            const dy = p.y - mouse.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 110 && dist > 0) {
+              const force = (1 - dist / 110) * 1.8;
+              p.x += (dx / dist) * force;
+              p.y += (dy / dist) * (force * 0.5);
+            }
+          }
+
+          // Screen loop
+          if (p.y > height + 10) {
+            p.y = -10;
+            p.x = Math.random() * width;
+          }
+          if (p.x < -10) p.x = width + 10;
+          if (p.x > width + 10) p.x = -10;
+
+          // Render: either crystal or soft snow dot
+          if (p.isCrystal) {
+            drawSnowCrystal(p);
+          } else {
+            ctx.fillStyle = `rgba(240, 249, 255, ${p.alpha})`;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+        ctx.restore();
+      } else if (theme === 'hermes-light') {
+        // High-Contrast Technical Geometric Grid Scene
+        ctx.save();
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+          p.x += p.vx * 0.35;
+          p.y += p.vy * 0.35;
+
+          if (p.x < 0) p.x = width;
+          if (p.x > width) p.x = 0;
+          if (p.y < 0) p.y = height;
+          if (p.y > height) p.y = 0;
+
+          const dx = mouse.x - p.x;
+          const dy = mouse.y - p.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 110) {
+            ctx.strokeStyle = `rgba(3, 105, 161, ${0.25 * (1 - dist / 110)})`;
+            ctx.lineWidth = 0.8;
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(mouse.x, mouse.y);
+            ctx.stroke();
+          }
+
+          ctx.fillStyle = `rgba(100, 116, 139, 0.35)`;
+          ctx.fillRect(p.x - 1, p.y - 1, 2, 2);
+        }
+        ctx.restore();
+      } else if (theme === 'fluent-dark') {
+        // Fluent 2 Mica Ambient Glowing Orbs
+        ctx.save();
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+          p.x += p.vx * 0.45;
+          p.y += p.vy * 0.45;
+
+          if (p.x < 0) p.x = width;
+          if (p.x > width) p.x = 0;
+          if (p.y < 0) p.y = height;
+          if (p.y > height) p.y = 0;
+
+          if (mouse.active) {
+            const dx = mouse.x - p.x;
+            const dy = mouse.y - p.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 130) {
+              ctx.strokeStyle = `rgba(96, 205, 255, ${0.3 * (1 - dist / 130)})`;
+              ctx.lineWidth = 1;
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(mouse.x, mouse.y);
+              ctx.stroke();
+            }
+          }
+
+          ctx.fillStyle = `rgba(96, 205, 255, ${p.alpha * 0.75})`;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, Math.min(p.radius, 2.8), 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      } else {
+        // Hermes Dark: Constellation & Starfield Scene
+        ctx.save();
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+          p.x += p.vx * 0.5;
+          p.y += p.vy * 0.5;
+
+          if (p.x < 0) p.x = width;
+          if (p.x > width) p.x = 0;
+          if (p.y < 0) p.y = height;
+          if (p.y > height) p.y = 0;
+
+          const dx = mouse.x - p.x;
+          const dy = mouse.y - p.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 120) {
+            ctx.strokeStyle = `rgba(255, 215, 0, ${0.35 * (1 - dist / 120)})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(mouse.x, mouse.y);
+            ctx.stroke();
+          }
+
+          ctx.fillStyle = `rgba(255, 215, 0, ${p.alpha * 0.65})`;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, Math.min(p.radius, 2.2), 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+
+      animId = requestAnimationFrame(draw);
+    }
+
+    function startLoop() {
+      if (animId) cancelAnimationFrame(animId);
+      animId = requestAnimationFrame(draw);
+    }
+
+    startLoop();
+
+    // Global toggle controller
+    window.__setBgFx = function (enabled) {
+      isEnabled = !!enabled;
+      localStorage.setItem('kfolio_bg_fx', isEnabled ? 'true' : 'false');
+      canvas.style.display = isEnabled ? 'block' : 'none';
+      if (isEnabled) {
+        startLoop();
+      } else {
+        ctx.clearRect(0, 0, width, height);
+      }
+    };
+
+    if (!isEnabled) {
+      canvas.style.display = 'none';
+    }
+  })();
+</script>

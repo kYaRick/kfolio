@@ -1,0 +1,58 @@
+---
+import { useT } from '@/i18n/ui';
+import { byNewest, isoDate, pageUrl, postUrl, type Lang } from '@/lib/site';
+import { getCollection } from 'astro:content';
+import Icon from './Icon.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+const allPosts = await getCollection('blog', ({ data }) => {
+  return data.lang === lang;
+});
+
+const sortedPosts = allPosts.sort(byNewest).slice(0, 3);
+const t = useT(lang);
+---
+
+<section class="card recent-blog-card" aria-label="Recent Blog Posts">
+  <div class="card-title">
+    <div style="display: flex; align-items: center; gap: 6px;">
+      <Icon name="pen-tool" size={15} />
+      <span>{t('blog.recent')}</span>
+    </div>
+    <a href={pageUrl(lang, 'blog')} style="font-size: 10.5px; color: var(--accent-amber); text-decoration: underline;">
+      {t('blog.viewAll')}
+    </a>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+    {sortedPosts.length === 0 ? (
+      <p style="font-size: 11.5px; color: var(--text-muted);">{t('blog.empty')}</p>
+    ) : (
+      sortedPosts.map((post) => (
+          <article style="border-bottom: 1px dashed var(--border-subtle); padding-bottom: 0.6rem;">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 0.4rem; flex-wrap: wrap;">
+              <a href={postUrl(post)} style="color: var(--text-white); font-weight: 700; font-size: 12.5px;">
+                {post.data.title}
+              </a>
+              <time datetime={post.data.pubDate.toISOString()} style="font-size: 10.5px; color: var(--text-muted);">
+                {isoDate(post.data.pubDate)}
+              </time>
+            </div>
+            <p style="font-size: 11.5px; color: var(--text-muted); margin: 0.2rem 0 0.4rem 0;">
+              {post.data.description}
+            </p>
+            <div class="tags-wrap">
+              {post.data.tags.map((tag) => (
+                <span class="tag" style="font-size: 10px;">#{tag}</span>
+              ))}
+            </div>
+          </article>
+      ))
+    )}
+  </div>
+</section>

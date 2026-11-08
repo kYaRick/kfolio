@@ -1,0 +1,498 @@
+---
+import { useT } from '@/i18n/ui';
+import { pageUrl, type Lang } from '@/lib/site';
+import Icon from './Icon.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useT(lang);
+---
+
+<div class="modal-overlay" id="modal-settings" role="dialog" aria-modal="true" aria-labelledby="settings-modal-title">
+  <div class="modal-dialog settings-dialog">
+    <!-- Header -->
+    <div class="modal-header">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <Icon name="settings" size={16} />
+        <span class="modal-title" id="settings-modal-title">
+          {t('settings.title')}
+        </span>
+      </div>
+      <button type="button" class="modal-close-btn" id="close-settings-btn" aria-label="Close modal">
+        <Icon name="close" size={16} />
+      </button>
+    </div>
+
+    <!-- Segmented Tab Navigation -->
+    <div class="settings-tabs-nav" role="tablist">
+      <button
+        type="button"
+        class="settings-tab-btn active"
+        data-target="tab-appearance"
+        role="tab"
+        aria-selected="true"
+      >
+        <Icon name="palette" size={14} />
+        <span>{t('settings.tabTheme')}</span>
+      </button>
+      <button
+        type="button"
+        class="settings-tab-btn"
+        data-target="tab-export"
+        role="tab"
+        aria-selected="false"
+      >
+        <Icon name="printer" size={14} />
+        <span>{t('settings.tabExport')}</span>
+      </button>
+    </div>
+
+    <div class="modal-body settings-body">
+      <!-- TAB 1: THEME & APPEARANCE -->
+      <div class="settings-tab-pane active" id="tab-appearance" role="tabpanel">
+        <!-- Color Palette -->
+        <div class="settings-section">
+          <label class="settings-label">
+            <Icon name="palette" size={13} />
+            <span>{t('settings.palette')}</span>
+          </label>
+          <div class="theme-picker-grid">
+            <button type="button" class="theme-card-btn settings-theme-pill" data-theme="fluent-dark">
+              <span class="theme-color-indicator" style="background: #60cdff; border-color: #0078d4;"></span>
+              <div class="theme-info">
+                <span class="theme-name">Fluent Dark</span>
+                <span class="theme-sub">Mica & Acrylic</span>
+              </div>
+            </button>
+            <button type="button" class="theme-card-btn settings-theme-pill" data-theme="hermes-dark">
+              <span class="theme-color-indicator" style="background: #FFD700; border-color: #3D3219;"></span>
+              <div class="theme-info">
+                <span class="theme-name">Hermes Dark</span>
+                <span class="theme-sub">Amber & Obsidian</span>
+              </div>
+            </button>
+            <button type="button" class="theme-card-btn settings-theme-pill" data-theme="hermes-light">
+              <span class="theme-color-indicator" style="background: #0284c7; border-color: #cbd5e1;"></span>
+              <div class="theme-info">
+                <span class="theme-name">Clean Light</span>
+                <span class="theme-sub">High-Contrast Slate</span>
+              </div>
+            </button>
+            <button type="button" class="theme-card-btn settings-theme-pill" data-theme="seasonal-winter">
+              <span class="theme-color-indicator" style="background: #38bdf8; border-color: #0284c7;"></span>
+              <div class="theme-info">
+                <span class="theme-name">Winter Season</span>
+                <span class="theme-sub">Frost & Ice Core</span>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Language Selector -->
+        <div class="settings-section">
+          <label class="settings-label">
+            <Icon name="globe" size={13} />
+            <span>{t('settings.language')}</span>
+          </label>
+          <div class="segmented-control">
+            <a href={pageUrl('uk')} class={`segment-btn ${lang === 'uk' ? 'active' : ''}`}>
+              Українська (UK)
+            </a>
+            <a href={pageUrl('en')} class={`segment-btn ${lang === 'en' ? 'active' : ''}`}>
+              English (EN)
+            </a>
+          </div>
+        </div>
+
+        <!-- Interactive Background Toggle -->
+        <div class="settings-section settings-toggle-row">
+          <div>
+            <div class="toggle-title">
+              <Icon name="sparkles" size={13} />
+              <span>{t('settings.bgFx')}</span>
+            </div>
+            <div class="toggle-desc">
+              {t('settings.bgFxDesc')}
+            </div>
+          </div>
+          <label class="switch-control">
+            <input type="checkbox" id="toggle-interactive-bg" checked />
+            <span class="switch-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- TAB 2: RESUME EXPORT -->
+      <div class="settings-tab-pane" id="tab-export" role="tabpanel">
+        <div class="settings-section">
+          <div class="export-banner">
+            <Icon name="printer" size={18} />
+            <div>
+              <div style="font-weight: 700; color: var(--text-main); font-size: 12px;">
+                {t('settings.pdfTitle')}
+              </div>
+              <div style="font-size: 11px; color: var(--text-muted);">
+                {t('settings.pdfDesc')}
+              </div>
+            </div>
+          </div>
+
+          <!-- Section Checkboxes -->
+          <div class="checkboxes-list">
+            <label class="checkbox-item">
+              <input type="checkbox" id="chk-print-exp" checked />
+              <Icon name="briefcase" size={14} />
+              <span>{t('settings.sectionExperience')}</span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" id="chk-print-stack" checked />
+              <Icon name="cpu" size={14} />
+              <span>{t('settings.sectionToolsets')}</span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" id="chk-print-edu" checked />
+              <Icon name="graduation" size={14} />
+              <span>{t('settings.sectionEducation')}</span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" id="chk-print-asp" checked />
+              <Icon name="target" size={14} />
+              <span>{t('settings.sectionAspirations')}</span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" id="chk-print-bio" checked />
+              <Icon name="sparkles" size={14} />
+              <span>{t('settings.sectionBio')}</span>
+            </label>
+          </div>
+
+          <!-- Blog Blockade Notice -->
+          <div class="blog-block-notice">
+            <Icon name="lock" size={14} />
+            <span>
+              {t('settings.blogLocked')}
+            </span>
+          </div>
+
+          <button type="button" id="btn-settings-export-pdf" class="btn-primary-action">
+            <Icon name="printer" size={15} />
+            <span>{t('settings.export')}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .settings-dialog {
+    max-width: 520px;
+  }
+
+  /* Segmented Tabs */
+  .settings-tabs-nav {
+    display: flex;
+    background: var(--bg-base);
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 0.35rem 0.5rem 0 0.5rem;
+    gap: 4px;
+  }
+
+  .settings-tab-btn {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 0.5rem 0.85rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+  }
+
+  .settings-tab-btn:hover {
+    color: var(--text-main);
+  }
+
+  .settings-tab-btn.active {
+    color: var(--accent-amber);
+    border-bottom-color: var(--accent-amber);
+    background: var(--bg-panel);
+    border-radius: 4px 4px 0 0;
+  }
+
+  /* Tab Panes */
+  .settings-tab-pane {
+    display: none;
+    flex-direction: column;
+    gap: 1.15rem;
+  }
+
+  .settings-tab-pane.active {
+    display: flex;
+  }
+
+  .settings-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .settings-label {
+    color: var(--accent-gold);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Theme Cards */
+  .theme-picker-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.6rem;
+  }
+
+  .theme-card-btn {
+    background: var(--bg-subtle);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    padding: 0.65rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s ease;
+    font-family: inherit;
+  }
+
+  .theme-card-btn:hover {
+    border-color: var(--border-hover);
+    background: var(--bg-base);
+  }
+
+  .theme-card-btn.active {
+    border-color: var(--accent-gold);
+    background: var(--tag-bg);
+    box-shadow: 0 0 0 1px var(--accent-gold);
+  }
+
+  .theme-card-btn.active .theme-color-indicator {
+    box-shadow: 0 0 0 2px var(--bg-panel), 0 0 0 4px var(--accent-gold);
+  }
+
+  .theme-color-indicator {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid;
+    flex-shrink: 0;
+    transition: box-shadow 0.2s ease;
+  }
+
+  .theme-info {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.25;
+  }
+
+  .theme-name {
+    color: var(--text-main);
+    font-size: 11.5px;
+    font-weight: 700;
+  }
+
+  .theme-sub {
+    color: var(--text-muted);
+    font-size: 10px;
+  }
+
+  /* Segmented Language Switch */
+  .segmented-control {
+    display: flex;
+    background: var(--bg-base);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    padding: 3px;
+    gap: 4px;
+  }
+
+  .segment-btn {
+    flex: 1;
+    text-align: center;
+    padding: 0.4rem;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--text-muted);
+    border-radius: 4px;
+    transition: all 0.15s ease;
+  }
+
+  .segment-btn:hover {
+    color: var(--text-main);
+  }
+
+  .segment-btn.active {
+    background: var(--accent-gold);
+    color: var(--btn-active-text);
+    font-weight: 700;
+  }
+
+  /* Toggle Row */
+  .settings-toggle-row {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--border-subtle);
+    padding-top: 0.85rem;
+  }
+
+  .toggle-title {
+    color: var(--text-main);
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .toggle-desc {
+    color: var(--text-muted);
+    font-size: 11px;
+    margin-top: 2px;
+  }
+
+  /* Switch Control */
+  .switch-control {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
+  }
+
+  .switch-control input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .switch-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--border-color);
+    transition: 0.25s;
+    border-radius: 24px;
+    border: 1px solid var(--border-subtle);
+  }
+
+  .switch-slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 3px;
+    bottom: 3px;
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+    transition: 0.25s;
+    border-radius: 50%;
+  }
+
+  input:checked + .switch-slider {
+    background-color: var(--accent-amber);
+  }
+
+  input:checked + .switch-slider:before {
+    transform: translateX(20px);
+    background-color: #ffffff;
+  }
+
+  /* Export Tab Styling */
+  .export-banner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border-subtle);
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    color: var(--accent-amber);
+  }
+
+  .checkboxes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    background: var(--bg-base);
+    padding: 0.75rem;
+    border-radius: 6px;
+    border: 1px solid var(--border-subtle);
+  }
+
+  .checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11.5px;
+    color: var(--text-main);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .checkbox-item input {
+    accent-color: var(--accent-amber);
+    cursor: pointer;
+    width: 15px;
+    height: 15px;
+  }
+
+  .blog-block-notice {
+    background: var(--bg-subtle);
+    border-left: 3px solid var(--accent-gold);
+    padding: 0.5rem 0.75rem;
+    border-radius: 0 4px 4px 0;
+    font-size: 11px;
+    color: var(--accent-gold);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-primary-action {
+    background: var(--accent-amber);
+    color: var(--btn-active-text);
+    border: 1px solid var(--accent-amber);
+    border-radius: 6px;
+    padding: 0.65rem 1rem;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+    margin-top: 0.25rem;
+  }
+
+  .btn-primary-action:hover {
+    opacity: 0.9;
+  }
+</style>

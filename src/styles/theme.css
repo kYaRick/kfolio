@@ -1,0 +1,92 @@
+:root,
+:root[data-theme="hermes-dark"] {
+  /* Default: Hermes Dark */
+  --bg-base: #0D1117;
+  --bg-panel: #10141D;
+  --bg-header: #141820;
+  --bg-subtle: rgba(255, 255, 255, 0.03);
+  --border-color: #3D3219;
+  --border-subtle: #2D2817;
+  --border-hover: #5a4a25;
+  --accent-gold: #FFD700;
+  --accent-amber: #FFBF00;
+  --accent-dim: #B8860B;
+  --btn-active-text: #000000;
+  --text-main: #FFF8DC;
+  --text-muted: #8B8682;
+  --text-white: #F8FAFC;
+  --status-ok: #7EE787;
+  --ua-blue: #58A6FF;
+  --tag-bg: rgba(255, 215, 0, 0.08);
+  --tag-border: rgba(255, 215, 0, 0.25);
+  --shadow-panel: 0 8px 24px rgba(0, 0, 0, 0.6);
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+:root[data-theme="hermes-light"] {
+  --bg-base: #f1f5f9;
+  --bg-panel: #ffffff;
+  --bg-header: #ffffff;
+  --bg-subtle: #f8fafc;
+  --border-color: #cbd5e1;
+  --border-subtle: #e2e8f0;
+  --border-hover: #94a3b8;
+  --accent-gold: #0369a1;
+  --accent-amber: #0284c7;
+  --accent-dim: #075985;
+  --btn-active-text: #ffffff;
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --text-white: #020617;
+  --status-ok: #16a34a;
+  --ua-blue: #0284c7;
+  --tag-bg: #e0f2fe;
+  --tag-border: #bae6fd;
+  --shadow-panel: 0 4px 16px rgba(15, 23, 42, 0.08);
+}
+
+:root[data-theme="seasonal-winter"] {
+  --bg-base: #061526;
+  --bg-panel: #0a2139;
+  --bg-header: #0f2d4d;
+  --bg-subtle: rgba(56, 189, 248, 0.05);
+  --border-color: #38bdf8;
+  --border-subtle: #0284c7;
+  --border-hover: #7dd3fc;
+  --accent-gold: #38bdf8;
+  --accent-amber: #7dd3fc;
+  --accent-dim: #0ea5e9;
+  --btn-active-text: #000000;
+  --text-main: #f0f9ff;
+  --text-muted: #94a3b8;
+  --text-white: #ffffff;
+  --status-ok: #34d399;
+  --ua-blue: #38bdf8;
+  --tag-bg: rgba(56, 189, 248, 0.12);
+  --tag-border: rgba(56, 189, 248, 0.35);
+  --shadow-panel: 0 8px 32px rgba(2, 132, 199, 0.25);
+}
+
+:root[data-theme="fluent-dark"] {
+  /* Microsoft Fluent 2 Dark Acrylic / Mica */
+  --bg-base: #141417;
+  --bg-panel: rgba(32, 32, 38, 0.82);
+  --bg-header: rgba(40, 40, 48, 0.9);
+  --bg-subtle: rgba(255, 255, 255, 0.04);
+  --border-color: rgba(255, 255, 255, 0.14);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-hover: #60cdff;
+  --accent-gold: #60cdff;
+  --accent-amber: #70d6ff;
+  --accent-dim: #0078d4;
+  --btn-active-text: #000000;
+  --text-main: #f4f4f5;
+  --text-muted: #a1a1aa;
+  --text-white: #ffffff;
+  --status-ok: #4ade80;
+  --ua-blue: #38bdf8;
+  --tag-bg: rgba(96, 205, 255, 0.12);
+  --tag-border: rgba(96, 205, 255, 0.28);
+  --shadow-panel: 0 10px 36px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}

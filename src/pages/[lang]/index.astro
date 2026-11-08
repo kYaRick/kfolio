@@ -1,0 +1,80 @@
+---
+import { getCv } from '@/lib/cv';
+import TerminalLayout from '@/layouts/TerminalLayout.astro';
+import IdentityCard from '@/components/IdentityCard.astro';
+import ContactsCard from '@/components/ContactsCard.astro';
+import ToolsetsCard from '@/components/ToolsetsCard.astro';
+import ExperienceTimeline from '@/components/ExperienceTimeline.astro';
+import AspirationsCard from '@/components/AspirationsCard.astro';
+import HumorBioCard from '@/components/HumorBioCard.astro';
+import EducationLanguagesCard from '@/components/EducationLanguagesCard.astro';
+import RecentBlogPosts from '@/components/RecentBlogPosts.astro';
+import { langStaticPaths, type Lang } from '@/lib/site';
+
+export const getStaticPaths = langStaticPaths;
+
+const { lang } = Astro.params as { lang: Lang };
+
+const cv = await getCv(lang);
+---
+
+<TerminalLayout
+  title={`${cv.name} // ${cv.title}`}
+  description={cv.motto}
+  lang={lang}
+  currentPage="cv"
+>
+  <div class="bento-grid">
+    <!-- Left Column: Identity, Contacts, Education, Humor -->
+    <aside class="col-sidebar">
+      <IdentityCard
+        name={cv.name}
+        title={cv.title}
+        avatar={cv.avatar}
+        motto={cv.motto}
+        sessionHost={cv.sessionHost}
+        status={cv.status}
+        experienceYears={cv.contacts.experienceYears}
+        location={cv.contacts.location}
+        lang={lang}
+      />
+
+      <ContactsCard
+        contacts={cv.contacts}
+        lang={lang}
+      />
+
+      <EducationLanguagesCard
+        education={cv.education}
+        languages={cv.languages}
+        lang={lang}
+      />
+
+      <HumorBioCard
+        humor={cv.humor}
+        interests={cv.interests}
+        lang={lang}
+      />
+    </aside>
+
+    <!-- Right Column: Toolsets, Experience, Aspirations, Recent Blog -->
+    <section class="col-main">
+      <ToolsetsCard
+        toolsets={cv.toolsets}
+        lang={lang}
+      />
+
+      <ExperienceTimeline
+        experience={cv.experience}
+        lang={lang}
+      />
+
+      <AspirationsCard
+        aspirations={cv.aspirations}
+        lang={lang}
+      />
+
+      <RecentBlogPosts lang={lang} />
+    </section>
+  </div>
+</TerminalLayout>

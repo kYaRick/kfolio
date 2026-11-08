@@ -1,0 +1,121 @@
+---
+import { useT } from '@/i18n/ui';
+import { pageUrl, type Lang, type Page } from '@/lib/site';
+import Icon from './Icon.astro';
+
+interface Props {
+  currentLang?: Lang;
+  currentPage?: Page;
+}
+
+const {
+  currentLang = "en",
+  currentPage = "cv"
+} = Astro.props;
+
+const ukPath = pageUrl('uk', currentPage);
+const enPath = pageUrl('en', currentPage);
+const cvPath = pageUrl(currentLang);
+const blogPath = pageUrl(currentLang, 'blog');
+const t = useT(currentLang);
+---
+
+<header class="site-header">
+  <div class="header-brand">
+    <a href={cvPath} style="display: flex; align-items: center; gap: 6px;">
+      <span class="status-pulse-dot"></span>
+      <span class="header-agent-name">kfolio</span>
+    </a>
+    <span class="header-dot">·</span>
+    <span class="header-session">kyarick@hypervisor</span>
+  </div>
+
+  <nav class="header-nav" aria-label="Main Navigation">
+    <!-- Group 1: Navigation Links -->
+    <div class="nav-links">
+      <a
+        href={cvPath}
+        class={`nav-item has-tooltip ${currentPage === 'cv' ? 'active' : ''}`}
+        aria-label={t('nav.cv')}
+        title={t('nav.cv')}
+        data-tooltip={t('nav.cv')}
+      >
+        <Icon name="file-text" size={15} />
+      </a>
+      <a
+        href={blogPath}
+        class={`nav-item has-tooltip ${currentPage === 'blog' ? 'active' : ''}`}
+        aria-label={t('nav.blog')}
+        title={t('nav.blog')}
+        data-tooltip={t('nav.blogShort')}
+      >
+        <Icon name="pen-tool" size={15} />
+      </a>
+      <button
+        type="button"
+        class="nav-item has-tooltip"
+        id="btn-open-settings"
+        aria-label={t('nav.settings')}
+        title={t('nav.settings')}
+        data-tooltip={t('nav.settings')}
+      >
+        <Icon name="settings" size={15} />
+      </button>
+    </div>
+
+    <!-- Vertical Divider -->
+    <div class="header-divider" aria-hidden="true"></div>
+
+    <!-- Group 2: Special Actions (Expand All, Quick Print/PDF) -->
+    <div class="header-actions">
+      <!-- Full Reading Mode (Eye Toggle) -->
+      <button
+        type="button"
+        id="btn-toggle-reading-mode"
+        class="nav-item reading-mode-btn has-tooltip"
+        title={t('nav.readingModeHint')}
+        aria-label={t('nav.readingMode')}
+        data-tooltip={t('experience.expandAll')}
+      >
+        <span class="icon-eye-wrap" style="display: inline-flex; align-items: center;">
+          <Icon name="eye" size={15} />
+        </span>
+      </button>
+
+      <!-- Quick Export / Print PDF -->
+      <button
+        type="button"
+        id="btn-export-pdf"
+        class="nav-item pdf-btn has-tooltip"
+        title={t('nav.print')}
+        aria-label={t('nav.print')}
+        data-tooltip={t('nav.printShort')}
+      >
+        <Icon name="printer" size={15} />
+      </button>
+    </div>
+
+    <!-- Vertical Divider -->
+    <div class="header-divider" aria-hidden="true"></div>
+
+    <!-- Group 3: Language Switch -->
+    <div class="header-lang-switch">
+      <a
+        href={ukPath}
+        class={`tool-pill ${currentLang === 'uk' ? 'active' : ''}`}
+        data-lang="uk"
+        title="Українська"
+      >
+        UA
+      </a>
+      <a
+        href={enPath}
+        class={`tool-pill ${currentLang === 'en' ? 'active' : ''}`}
+        data-lang="en"
+        title="English"
+      >
+        EN
+      </a>
+    </div>
+  </nav>
+</header>

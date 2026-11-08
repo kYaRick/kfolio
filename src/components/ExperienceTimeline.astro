@@ -1,0 +1,125 @@
+---
+import { useT } from '@/i18n/ui';
+import type { Lang } from '@/lib/site';
+import Icon from './Icon.astro';
+
+interface Job {
+  company: string;
+  role: string;
+  period: string;
+  isCurrent: boolean;
+  summary?: string;
+  duties: string[];
+  techStack: string[];
+}
+
+interface Props {
+  experience: Job[];
+  lang: Lang;
+}
+
+const { experience, lang } = Astro.props;
+const t = useT(lang);
+---
+
+<section class="card experience-card" aria-label="Work Experience">
+  <div class="card-title">
+    <div style="display: flex; align-items: center; gap: 6px;">
+      <Icon name="briefcase" size={15} />
+      <span>{t('experience.title')}</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <button
+        type="button"
+        id="btn-toggle-all-exp"
+        class="toggle-all-exp-btn"
+        data-label-collapse={t('experience.collapseAll')}
+        data-label-expand={t('experience.expandAll')}
+        title={t('experience.toggleHint')}
+      >
+        <span class="toggle-text">{t('experience.collapseAll')}</span>
+      </button>
+      <span style="font-size: 10px; color: var(--status-ok);">CHRONOLOGICAL LOG</span>
+    </div>
+  </div>
+
+  <div class="timeline">
+    {experience.map((job) => (
+      <details class="job-item job-collapsible" open={job.isCurrent}>
+        <summary class="job-summary-header">
+          <div class="job-header">
+            <div class="job-title-wrap">
+              <h3 class="job-title">{job.role}</h3>
+              <span class="job-company">@{job.company}</span>
+              {job.isCurrent && (
+                <span class="tag" style="background: rgba(126, 231, 135, 0.15); border-color: var(--status-ok); color: var(--status-ok); font-weight: 700; margin-left: 2px;">
+                  {t('experience.current')}
+                </span>
+              )}
+            </div>
+
+            <div class="job-header-meta">
+              <span class="job-period">{job.period}</span>
+              <div class="job-chevron-btn" aria-hidden="true">
+                <span class="job-chevron">
+                  <Icon name="chevron-down" size={13} />
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="tags-wrap" style="margin-top: 0.25rem;">
+            {job.techStack.map((tech) => (
+              <span class="tag" data-tag={tech} style="font-size: 10px;">{tech}</span>
+            ))}
+          </div>
+        </summary>
+
+        <div class="job-details-body">
+          <div class="job-details-divider"></div>
+
+          {job.summary && <p class="job-summary">{job.summary}</p>}
+
+          <span class="details-section-label">
+            <Icon name="file-text" size={12} />
+            <span>{t('experience.duties')}</span>
+          </span>
+
+          <ul class="job-duties">
+            {job.duties.map((duty) => (
+              <li>{duty}</li>
+            ))}
+          </ul>
+        </div>
+      </details>
+    ))}
+  </div>
+</section>
+
+<script>
+  function setupExperienceAccordion() {
+    const toggleBtn = document.getElementById('btn-toggle-all-exp');
+    const items = document.querySelectorAll<HTMLDetailsElement>('.job-collapsible');
+
+    if (!toggleBtn || toggleBtn.dataset.bound) return;
+    toggleBtn.dataset.bound = 'true';
+
+    const textSpan = toggleBtn.querySelector('.toggle-text');
+
+    toggleBtn.addEventListener('click', () => {
+      const anyClosed = Array.from(items).some((d) => !d.open);
+      items.forEach((d) => {
+        d.open = anyClosed;
+      });
+
+      if (textSpan) {
+        textSpan.textContent = anyClosed
+          ? (toggleBtn.dataset.labelCollapse ?? '')
+          : (toggleBtn.dataset.labelExpand ?? '');
+      }
+    });
+  }
+
+  setupExperienceAccordion();
+  document.addEventListener('astro:page-load', setupExperienceAccordion);
+</script>
