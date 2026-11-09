@@ -16,7 +16,6 @@ contacts:
   bluesky: "bsky.app/profile/kyarick.bsky.social"
   instagram: "instagram.com/kYaRick"
   location: "Lviv (since 2018), Ukraine"
-  experienceYears: 6
 
 toolsets:
   ai_models:
@@ -63,6 +62,25 @@ toolsets:
     - "pnpm"
     - "vitest"
     - "Git / CI/CD"
+  devops_net:
+    - "Linux Server Admin"
+    - "Caddy (Reverse Proxy)"
+    - "Simple Server"
+    - "ZeroTier"
+    - "NetBird"
+    - "UrBackup"
+    - "Windows Server"
+    - "Self-hosting"
+  agents_automation:
+    - "Hermes Agents"
+    - "Multi-agent workflows"
+    - "Claude Code / Codex"
+    - "Grok Bot"
+    - "Dots (OpenAI)"
+    - "Claude Duet"
+    - "Muse (Meta)"
+    - "MCP Servers"
+    - "Bot automations"
   special_ops:
     - "Demining & MilTech"
     - "Home Assistant"
@@ -72,8 +90,7 @@ toolsets:
 experience:
   - company: "Renesas Electronics"
     role: "Sr Application and Software Tools Engineer"
-    period: "August 2023 - Present"
-    isCurrent: true
+    start: "2023-08"
     summary: "Supporting company products, technical documentation generation, and close collaboration with Field Application Engineers (FAEs)."
     duties:
       - "Lead support for internal documentation generation engine: calculating delay blocks and timing accuracy."
@@ -81,6 +98,7 @@ experience:
       - "Version control system administration, CI/CD pipeline optimization, and regular releases."
       - "Code review, architectural refactoring, and code base maintenance."
       - "Adding new functional blocks to existing desktop and cross-platform internal products."
+      - "Hands-on admin and DevOps work: Linux servers, Caddy as a reverse proxy, private overlay networks with ZeroTier and NetBird."
     techStack:
       - "AvaloniaUI"
       - "MAUI"
@@ -95,11 +113,15 @@ experience:
       - "Unit Testing"
       - "CI/CD"
       - "Vue3"
+      - "DevOps"
+      - "Caddy"
+      - "ZeroTier"
+      - "NetBird"
 
   - company: "FORGE.AI"
     role: "QA Engineer (AI UI Client Testing)"
-    period: "June 2023 - May 2024"
-    isCurrent: false
+    start: "2023-06"
+    end: "2024-05"
     summary: "Leading testing efforts for next-generation UI clients communicating with frontier LLMs."
     duties:
       - "Led UI testing for clients interacting with frontier LLMs including GPT, Gemini, and CodeLlama."
@@ -119,8 +141,8 @@ experience:
 
   - company: "Renesas Electronics"
     role: "Application Engineer (ESE)"
-    period: "August 2021 - August 2023"
-    isCurrent: false
+    start: "2021-08"
+    end: "2023-08"
     summary: "Development and support of internal desktop tooling, delay calculators, and documentation."
     duties:
       - "Built and maintained WPF and .NET desktop applications."
@@ -137,8 +159,8 @@ experience:
 
   - company: "Dialog Semiconductor"
     role: "Junior Application Engineer (ESE)"
-    period: "April 2021 - August 2021"
-    isCurrent: false
+    start: "2021-04"
+    end: "2021-08"
     summary: "Worked with visual environment programming and documentation for configurable ICs."
     duties:
       - "Visual environment programming for GreenPAK ICs."
@@ -153,8 +175,8 @@ experience:
 
   - company: "Vodafone Ukraine"
     role: "Trainee Software Developer"
-    period: "January 2019 - March 2019"
-    isCurrent: false
+    start: "2019-01"
+    end: "2019-03"
     summary: "Internal tooling testing and script automation."
     duties:
       - "Debugging and testing internal software for operator consultants."
@@ -167,6 +189,29 @@ experience:
       - "Bash"
       - "PowerShell"
       - "Git"
+
+  - company: "Auto Service Station (Lviv)"
+    role: "System Administrator & DevOps"
+    start: "2018-03"
+    end: "2022-08"
+    summary: "My first job: keeping the IT of a busy car service running, from front-office PCs to the server in the back room. Ran in parallel with university and my first engineering roles."
+    duties:
+      - "Maintained workstations, peripherals and the local network for the service bays and front office."
+      - "Ran and serviced on-site server hardware: storage, user accounts, updates and health checks."
+      - "Set up automated backups with UrBackup and actually tested restores."
+      - "Administered 1C for accounting and parts inventory. Survived it, would not recommend it to anyone."
+      - "Automated routine admin tasks with PowerShell, Bash and batch scripts."
+      - "First-line support for staff: from a jammed printer to a dead disk at 8 a.m."
+    techStack:
+      - "System Administration"
+      - "Windows Server"
+      - "Linux"
+      - "Networking"
+      - "UrBackup"
+      - "1C"
+      - "PowerShell"
+      - "Bash"
+      - "Hardware Maintenance"
 
 education:
   - year: "2024"
@@ -201,13 +246,13 @@ aspirations:
     - area: "Web / UI"
       desc: "Deep diving into Astro, AvaloniaUI, and modern cross-platform patterns."
     - area: "DevOps & Systems"
-      desc: "Expanding expertise in NixOS, virtualization (Proxmox/Hyper-V), containers, and workflow automation."
+      desc: "Expanding expertise in NixOS, virtualization (Proxmox/Hyper-V), containers, self-hosted networking (Caddy, ZeroTier, NetBird) and workflow automation."
     - area: "Embedded Systems"
       desc: "Configuring mixed-signal GreenPAK ICs (OpAmp, HV, BLDC)."
     - area: "Languages"
       desc: "Actively studying Rust, Go, and TinyGo."
   militaryProjects: "Contributed to sensitive defense initiatives, including initial firmware development for demining equipment and building cross-platform software for autonomous stations managing channel-hopping across aerial platforms (Fixed-wing UAS, FPV)."
-  personal: "Self-hosting, tuning smart home systems via Home Assistant, and engineering local-first AI tooling."
+  personal: "Self-hosting, tuning smart home systems via Home Assistant, engineering local-first AI tooling, and running Hermes agents plus automations (Grok Bot, Dots, Claude Duet, Muse) that do the boring parts for me."
 
 humor:
   lightbulb:

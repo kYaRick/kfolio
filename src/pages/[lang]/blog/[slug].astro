@@ -169,21 +169,46 @@ const t = useT(lang);
   }
 
   .blog-markdown-body {
-    padding: 1.8rem 2rem;
+    /* .card is a flex column with a gap; prose needs normal flow so margins collapse */
+    display: block;
+    padding: 1.4rem 1.75rem;
     font-size: 13.5px;
-    line-height: 1.75;
+    line-height: 1.65;
     color: var(--text-main);
     width: 100%;
     box-sizing: border-box;
   }
 
+  /* long prose reads better in a sans face; code and headings stay mono */
+  .blog-markdown-body :global(p),
+  .blog-markdown-body :global(li),
+  .blog-markdown-body :global(blockquote) {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    letter-spacing: 0.1px;
+  }
+
+  .blog-markdown-body :global(p code),
+  .blog-markdown-body :global(li code) {
+    font-size: 12.5px;
+  }
+
+  /* keep lines readable on wide screens */
+  .blog-markdown-body > :global(*:not(pre)) {
+    max-width: 80ch;
+  }
+
   .blog-markdown-body :global(h2) {
     color: var(--text-white);
-    font-size: 1.35rem;
+    font-size: 1.3rem;
     font-weight: 700;
-    margin: 1.75rem 0 0.85rem 0;
+    margin: 1.5rem 0 0.6rem 0;
     border-bottom: 1px solid var(--border-subtle);
     padding-bottom: 0.4rem;
+  }
+
+  .blog-markdown-body > :global(:first-child) {
+    margin-top: 0;
   }
 
   .blog-markdown-body :global(h2:first-child) {
@@ -194,24 +219,24 @@ const t = useT(lang);
     color: var(--accent-amber);
     font-size: 1.15rem;
     font-weight: 600;
-    margin: 1.4rem 0 0.65rem 0;
+    margin: 1.2rem 0 0.5rem 0;
   }
 
   .blog-markdown-body :global(p) {
-    margin: 0.85rem 0;
-    line-height: 1.75;
+    margin: 0.6rem 0;
+    line-height: 1.65;
   }
 
   .blog-markdown-body :global(ol),
   .blog-markdown-body :global(ul) {
-    margin: 0.85rem 0 0.85rem 1.5rem;
+    margin: 0.6rem 0 0.6rem 1.4rem;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.3rem;
   }
 
   .blog-markdown-body :global(li) {
-    line-height: 1.65;
+    line-height: 1.6;
   }
 
   .blog-markdown-body :global(code) {
@@ -228,9 +253,10 @@ const t = useT(lang);
     background: var(--bg-base) !important;
     border: 1px solid var(--border-color);
     border-radius: 6px;
-    padding: 1rem 1.25rem;
+    padding: 0.85rem 1.1rem;
     overflow-x: auto;
-    margin: 1.2rem 0;
+    margin: 0.9rem 0;
+    line-height: 1.55;
   }
 
   .blog-markdown-body :global(pre code) {
@@ -240,12 +266,21 @@ const t = useT(lang);
     color: var(--text-main);
   }
 
+  /* Shiki renders both github-light and github-dark; pick by theme */
+  :global(.astro-code span) {
+    color: var(--shiki-dark);
+  }
+
+  :global(:root[data-theme='hermes-light'] .astro-code span) {
+    color: var(--shiki-light);
+  }
+
   .blog-markdown-body :global(blockquote) {
     border-left: 3px solid var(--accent-gold);
     background: var(--bg-subtle);
     padding: 0.75rem 1.25rem;
     border-radius: 0 6px 6px 0;
-    margin: 1.2rem 0;
+    margin: 0.9rem 0;
     color: var(--text-muted);
   }
 

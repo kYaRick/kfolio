@@ -1,13 +1,14 @@
 ---
 import { useT } from '@/i18n/ui';
 import type { Lang } from '@/lib/site';
+import { formatPeriod } from '@/lib/dates';
 import Icon from './Icon.astro';
 
 interface Job {
   company: string;
   role: string;
-  period: string;
-  isCurrent: boolean;
+  start: string;
+  end?: string;
   summary?: string;
   duties: string[];
   techStack: string[];
@@ -44,14 +45,16 @@ const t = useT(lang);
   </div>
 
   <div class="timeline">
-    {experience.map((job) => (
-      <details class="job-item job-collapsible" open={job.isCurrent}>
+    {experience.map((job) => {
+      const isCurrent = !job.end;
+      return (
+      <details class="job-item job-collapsible" open={isCurrent}>
         <summary class="job-summary-header">
           <div class="job-header">
             <div class="job-title-wrap">
               <h3 class="job-title">{job.role}</h3>
               <span class="job-company">@{job.company}</span>
-              {job.isCurrent && (
+              {isCurrent && (
                 <span class="tag" style="background: rgba(126, 231, 135, 0.15); border-color: var(--status-ok); color: var(--status-ok); font-weight: 700; margin-left: 2px;">
                   {t('experience.current')}
                 </span>
@@ -59,7 +62,7 @@ const t = useT(lang);
             </div>
 
             <div class="job-header-meta">
-              <span class="job-period">{job.period}</span>
+              <time class="job-period" datetime={job.start}>{formatPeriod(lang, job.start, job.end, t('experience.present'))}</time>
               <div class="job-chevron-btn" aria-hidden="true">
                 <span class="job-chevron">
                   <Icon name="chevron-down" size={13} />
@@ -92,7 +95,8 @@ const t = useT(lang);
           </ul>
         </div>
       </details>
-    ))}
+    );
+    })}
   </div>
 </section>
 

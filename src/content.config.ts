@@ -2,6 +2,7 @@ import { defineCollection } from 'astro:content';
 import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
 import { LANGS } from './lib/site';
+import { YEAR_MONTH } from './lib/dates';
 
 const cv = defineCollection({
   loader: glob({ pattern: '*.md', base: './src/content/cv' }),
@@ -23,15 +24,16 @@ const cv = defineCollection({
       bluesky: z.string().optional(),
       instagram: z.string().optional(),
       location: z.string(),
-      experienceYears: z.number().default(6),
     }),
     toolsets: z.record(z.string(), z.array(z.string())),
     experience: z.array(
       z.object({
         company: z.string(),
         role: z.string(),
-        period: z.string(),
-        isCurrent: z.boolean().default(false),
+        /** YYYY-MM; the period label and total years are derived from these */
+        start: z.string().regex(YEAR_MONTH, 'Use YYYY-MM'),
+        /** YYYY-MM; omit for the current job */
+        end: z.string().regex(YEAR_MONTH, 'Use YYYY-MM').optional(),
         summary: z.string().optional(),
         duties: z.array(z.string()),
         techStack: z.array(z.string()),

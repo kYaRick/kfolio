@@ -95,10 +95,18 @@ html.is-navigating button {
   pointer-events: none !important;
 }
 
-html.is-navigating .site-main {
-  opacity: 0.55;
-  filter: saturate(0.85);
-  transition: opacity 0.15s ease, filter 0.15s ease;
+main.site-main,
+.site-header,
+.site-footer {
+  transition: opacity 0.18s ease, filter 0.18s ease;
+}
+
+/* loading: the whole page shell (header, content, footer) blurs behind the centred HUD */
+html.is-navigating .site-main,
+html.is-navigating .site-header,
+html.is-navigating .site-footer {
+  opacity: 0.6;
+  filter: blur(3px) saturate(0.85);
 }
 
 html.is-navigating .reading-progress-bar {
@@ -118,20 +126,20 @@ html.is-navigating .status-pulse-dot {
   100% { transform: scale(1); opacity: 1; }
 }
 
-/* Floating HUD Loading Pill */
+/* Loading HUD: centred over the blurred page */
 .nav-loading-pill {
   position: fixed;
-  top: 14px;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%) translateY(-35px);
-  background: var(--bg-panel);
+  transform: translate(-50%, -50%) scale(0.94);
+  background: var(--bg-header);
   border: 1px solid var(--accent-gold);
   color: var(--accent-gold);
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
-  padding: 4px 14px;
-  border-radius: 20px;
+  padding: 10px 18px;
+  border-radius: 8px;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -148,13 +156,13 @@ html.is-navigating .status-pulse-dot {
 html.is-navigating .nav-loading-pill {
   opacity: 1;
   visibility: visible;
-  transform: translateX(-50%) translateY(0);
+  transform: translate(-50%, -50%) scale(1);
 }
 
 .nav-loading-spinner {
   width: 9px;
   height: 9px;
-  border: 2px solid rgba(255, 215, 0, 0.25);
+  border: 2px solid color-mix(in srgb, var(--accent-gold) 25%, transparent);
   border-top-color: var(--accent-gold);
   border-radius: 50%;
   display: inline-block;
@@ -207,6 +215,21 @@ main.site-main {
   flex: 1 0 auto;
   display: flex;
   flex-direction: column;
+  /* neutral glass card so the content does not mix with the particle background */
+  background: color-mix(in srgb, var(--bg-base) 72%, transparent);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 1.1rem;
+  box-shadow: var(--shadow-panel);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+@media (max-width: 768px) {
+  main.site-main {
+    padding: 0.6rem;
+    border-radius: 10px;
+  }
 }
 
 /* Site Navigation Header */
@@ -214,14 +237,56 @@ main.site-main {
   background: var(--bg-header);
   border: 1.5px solid var(--border-color);
   border-radius: 8px;
-  padding: 0.65rem 1rem;
-  display: flex;
+  padding: 0.55rem 0.85rem;
+  /* pages | brand | tools: the brand stays centered whatever the side widths are */
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
   box-shadow: var(--shadow-panel);
-  flex-wrap: wrap;
   gap: 0.75rem;
   user-select: none;
+}
+
+.header-tools {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  justify-self: end;
+}
+
+.header-pages {
+  display: flex;
+  align-items: stretch;
+  gap: 2px;
+  justify-self: start;
+}
+
+.page-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.3rem 0.7rem;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--text-muted);
+  border: 1px solid transparent;
+  border-bottom: 2px solid transparent;
+  border-radius: 4px 4px 0 0;
+  text-decoration: none;
+  transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.page-tab:hover {
+  color: var(--text-white);
+  background: var(--bg-subtle);
+}
+
+.page-tab.active {
+  color: var(--accent-gold);
+  background: var(--tag-bg);
+  border-color: var(--border-subtle);
+  border-bottom-color: var(--accent-gold);
+  font-weight: 700;
 }
 
 .header-brand {
@@ -230,6 +295,8 @@ main.site-main {
   gap: 0.5rem;
   font-size: 12px;
   font-weight: 700;
+  justify-self: center;
+  text-decoration: none;
 }
 
 .header-agent-name {
@@ -260,18 +327,7 @@ main.site-main {
 }
 
 /* Nav Links & Controls */
-.header-nav {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  flex-wrap: wrap;
-}
 
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
 
 .nav-item {
   background: transparent;
@@ -520,10 +576,10 @@ main.site-main {
 
 .avatar-badge-container {
   position: relative;
-  width: 100%;
-  max-width: 100%;
+  /* always square: on tablets the sidebar is full width, a 290px-high strip cropped the face */
+  width: min(100%, 320px);
   aspect-ratio: 1 / 1;
-  max-height: 290px;
+  margin-inline: auto;
   border-radius: 8px;
   border: 1.5px solid var(--border-color);
   overflow: hidden;
@@ -545,6 +601,15 @@ main.site-main {
 }
 
 /* Avatar reveal effect (src/scripts/avatar-fx.ts) */
+html.fx-no-avatar .avatar-fx,
+html.fx-no-avatar [data-avatar-fx]::after {
+  display: none !important;
+}
+
+html.fx-no-avatar .avatar-badge-container[data-fx] {
+  cursor: default;
+}
+
 .avatar-fx {
   position: absolute;
   inset: 0;
@@ -567,12 +632,23 @@ main.site-main {
 
 .avatar-badge-container[data-fx='pixel']:hover .avatar-fx,
 .avatar-badge-container[data-fx='halftone']:hover .avatar-fx,
+.avatar-badge-container[data-fx]:focus-visible .avatar-fx,
 .avatar-badge-container.is-revealed .avatar-fx {
   opacity: 0;
 }
 
+/* keyboard users reveal the photo with Tab (frost included: no way to wipe by keys) */
+.avatar-badge-container:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+}
+
+.avatar-badge-container[data-fx]:focus-visible::after {
+  opacity: 0;
+}
+
 .avatar-fx.fx-intro {
-  animation: avatar-fog-in 1.6s ease-out both;
+  animation: avatar-fog-in 4s cubic-bezier(0.55, 0, 0.75, 0.4) 0.4s both;
 }
 
 @keyframes avatar-fog-in {
@@ -1148,7 +1224,7 @@ main.site-main {
 html.mode-full-reading .job-collapsible,
 html.mode-full-reading .job-details-body,
 html.mode-full-reading .toolsets-extra-collapse,
-html.mode-full-reading .joke-punchline {
+html.mode-full-reading .joke-punchline:not(.print-only-joke) {
   display: block !important;
 }
 
@@ -1360,13 +1436,31 @@ html.mode-full-reading .toolset-expand-btn {
   border-color: var(--border-subtle);
 }
 
-@media (max-width: 600px) {
-  .footer-col-left {
+/* Phones: header and footer actions live in the Edge quick panel (EdgePanel.astro) */
+@media (max-width: 768px) {
+  .site-header {
+    grid-template-columns: 1fr;
+    padding: 0.55rem 0.85rem;
+  }
+  .site-header .header-tools,
+  .site-header .header-pages {
+    display: none;
+  }
+  .header-brand {
+    min-width: 0;
+  }
+  .header-session {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .footer-col-left,
+  .footer-actions {
     display: none;
   }
   .site-footer {
     justify-content: center;
-    flex-wrap: wrap;
+    padding: 0.6rem 0.85rem;
   }
 }
 
@@ -1390,6 +1484,13 @@ html.mode-full-reading .toolset-expand-btn {
   display: flex;
 }
 
+/* reopened after a language switch: appear in place, no entrance animation */
+.modal-overlay.no-anim,
+.modal-overlay.no-anim .modal-dialog {
+  animation: none !important;
+  transition: none !important;
+}
+
 .modal-dialog {
   background: var(--bg-panel);
   border: 1.5px solid var(--border-color);
@@ -1406,6 +1507,51 @@ html.mode-full-reading .toolset-expand-btn {
 @keyframes modal-pop {
   from { opacity: 0; transform: scale(0.96); }
   to { opacity: 1; transform: scale(1); }
+}
+
+/* Phones: modals become a bottom sheet (full width, thumb-reachable) */
+@media (max-width: 600px) {
+  .modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .modal-dialog,
+  .settings-dialog {
+    max-width: none !important;
+    max-height: 88vh;
+    border-radius: 16px 16px 0 0;
+    border-bottom: 0;
+    overflow-y: auto;
+    animation: sheet-up 0.24s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .modal-dialog::before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 4px;
+    margin: 8px auto 0;
+    border-radius: 4px;
+    background: var(--border-color);
+  }
+}
+
+@keyframes sheet-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+/* Mid widths: keep the 3-part header on one line */
+@media (min-width: 769px) and (max-width: 1000px) {
+  .header-dot,
+  .header-session {
+    display: none;
+  }
+
+  .page-tab {
+    padding: 0.3rem 0.5rem;
+  }
 }
 
 .modal-header {
@@ -1472,15 +1618,16 @@ html.mode-full-reading .toolset-expand-btn {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Reading Progress Bar (Electric Cyan & Azure - distinctly separates from loading amber) */
+/* Reading Progress Bar: theme accent colours (gold in Hermes, ice in Winter, ...),
+   thinner and without the white head, so it still differs from the loading bar */
 .reading-progress-bar {
   position: fixed;
   top: 0;
   left: 0;
   height: 2.5px;
   width: 0%;
-  background: linear-gradient(90deg, #0284c7, #38bdf8, #60cdff);
-  box-shadow: 0 0 10px rgba(56, 189, 248, 0.85);
+  background: linear-gradient(90deg, var(--accent-dim), var(--accent-gold));
+  box-shadow: 0 0 10px color-mix(in srgb, var(--accent-gold) 70%, transparent);
   z-index: 999998;
   pointer-events: none;
   opacity: 0;
@@ -1538,6 +1685,13 @@ html.mode-full-reading .toolset-expand-btn {
   color: var(--accent-amber);
 }
 
+/* Phones: "back to top" is an item in the Edge quick panel instead */
+@media (max-width: 768px) {
+  .back-to-top-btn {
+    display: none !important;
+  }
+}
+
 @media (max-width: 600px) {
   .back-to-top-btn {
     bottom: 16px;
@@ -1556,6 +1710,14 @@ html.mode-full-reading .toolset-expand-btn {
    PERFECT A4 PRINT / PDF EXPORT STYLESHEET
    ========================================================================== */
 @media print {
+  main.site-main {
+    background: none !important;
+    border: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+  }
+
   .avatar-badge-container::after {
     display: none !important;
   }

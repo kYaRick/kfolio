@@ -12,9 +12,12 @@ type Mode = 'pixel' | 'halftone' | 'frost';
 const PITCH = 7; // CSS px per mosaic cell (small avatars use a finer grid)
 const INTRO_MS = 900;
 const BRUSH = 30; // CSS px wipe radius
-const REFOG_DELAY_MS = 900;
+const REFOG_DELAY_MS = 2500; // the glass stays clear for a moment after the last wipe
+const REFOG_MS = 8000; // then the whole wiped area fogs up again as one, eased in and out
 
-const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const reducedMotion = () =>
+  document.documentElement.classList.contains('fx-reduced') ||
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 function modeFor(theme: string, locked: boolean): Mode {
   if (theme === 'seasonal-winter' && !locked) return 'frost';
@@ -61,6 +64,11 @@ function stretch(lum: Float32Array): Float32Array {
   return lum.map((v) => Math.min(1, Math.max(0, (v - lo) / span)));
 }
 
+/** Smoothstep: gentle start and gentle finish. */
+function smooth(t: number) {
+  return t * t * (3 - 2 * t);
+}
+
 function easeOut(t: number) {
   return 1 - Math.pow(1 - t, 3);
 }
@@ -73,9 +81,12 @@ class AvatarFx {
   private mode: Mode = 'pixel';
   private raf = 0;
   private fog: HTMLCanvasElement | null = null;
+  /** Frost: alpha = how much of the glass is wiped clear. */
+  private mask: HTMLCanvasElement | null = null;
+  /** Frost: progress (0..1) of the current fog-up; the whole wiped area fogs up together. */
+  private refog = 0;
   private last: { x: number; y: number } | null = null;
   private lastWipe = 0;
-  private refogFrames = 0;
   private resizeObs: ResizeObserver;
   private readonly locked: boolean;
   private themeObs: MutationObserver;
@@ -135,6 +146,10 @@ class AvatarFx {
 
     if (this.mode === 'frost') {
       this.fog = this.buildFog();
+      this.mask = document.createElement('canvas');
+      this.mask.width = this.canvas.width;
+      this.mask.height = this.canvas.height;
+      this.refog = 0;
       this.ctx.globalCompositeOperation = 'source-over';
       this.ctx.clearRect(0, 0, this.w, this.h);
       this.ctx.drawImage(this.fog, 0, 0, this.w, this.h);
@@ -284,29 +299,57 @@ class AvatarFx {
   }
 
   private onMove = (e: PointerEvent) => {
-    if (this.mode !== 'frost') return;
+    if (this.mode !== 'frost' || !this.mask) return;
     const rect = this.box.getBoundingClientRect();
     const p = { x: e.clientX - rect.left, y: e.clientY - rect.top };
     const from = this.last ?? p;
+    const m = this.mask.getContext('2d')!;
+    m.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+
+    // A fog-up was in progress: bake its current state into the mask, so the
+    // old and the new wipes share one level and fog up together again.
+    if (this.refog > 0) {
+      m.globalCompositeOperation = 'destination-out';
+      m.globalAlpha = smooth(this.refog);
+      m.fillRect(0, 0, this.w, this.h);
+      m.globalAlpha = 1;
+      this.refog = 0;
+    }
+
+    m.globalCompositeOperation = 'source-over';
     const dist = Math.hypot(p.x - from.x, p.y - from.y);
     const steps = Math.max(1, Math.ceil(dist / (BRUSH / 3)));
-    const ctx = this.ctx;
-    ctx.globalCompositeOperation = 'destination-out';
     for (let i = 1; i <= steps; i++) {
       const x = from.x + ((p.x - from.x) * i) / steps;
       const y = from.y + ((p.y - from.y) * i) / steps;
-      const g = ctx.createRadialGradient(x, y, 0, x, y, BRUSH);
-      g.addColorStop(0, 'rgba(0,0,0,0.9)');
-      g.addColorStop(0.6, 'rgba(0,0,0,0.5)');
+      // firm brush: fully clear core, short soft rim (few in-between tones)
+      const g = m.createRadialGradient(x, y, 0, x, y, BRUSH);
+      g.addColorStop(0, 'rgba(0,0,0,1)');
+      g.addColorStop(0.72, 'rgba(0,0,0,1)');
       g.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.fillStyle = g;
-      ctx.fillRect(x - BRUSH, y - BRUSH, BRUSH * 2, BRUSH * 2);
+      m.fillStyle = g;
+      m.fillRect(x - BRUSH, y - BRUSH, BRUSH * 2, BRUSH * 2);
     }
-    ctx.globalCompositeOperation = 'source-over';
     this.last = p;
     this.lastWipe = performance.now();
+    this.composite();
     this.scheduleRefog();
   };
+
+  /** Frost frame = fog minus the wiped mask, faded by the shared fog-up progress. */
+  private composite() {
+    if (!this.fog || !this.mask) return;
+    const ctx = this.ctx;
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = 1;
+    ctx.clearRect(0, 0, this.w, this.h);
+    ctx.drawImage(this.fog, 0, 0, this.w, this.h);
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.globalAlpha = 1 - smooth(this.refog);
+    ctx.drawImage(this.mask, 0, 0, this.w, this.h);
+    ctx.globalAlpha = 1;
+    ctx.globalCompositeOperation = 'source-over';
+  }
 
   private onLeave = () => {
     this.last = null;
@@ -322,32 +365,35 @@ class AvatarFx {
   /** After the pointer stops, the glass slowly fogs up again. */
   private scheduleRefog() {
     cancelAnimationFrame(this.raf);
-    this.refogFrames = 0;
     const tick = (now: number) => {
-      if (this.mode !== 'frost' || !this.fog) return;
-      if (now - this.lastWipe < REFOG_DELAY_MS) {
+      if (this.mode !== 'frost' || !this.mask) return;
+      const idle = now - this.lastWipe - REFOG_DELAY_MS;
+      if (idle < 0) {
         this.raf = requestAnimationFrame(tick);
         return;
       }
-      const ctx = this.ctx;
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.globalAlpha = reducedMotion() ? 1 : 0.025;
-      ctx.drawImage(this.fog, 0, 0, this.w, this.h);
-      ctx.globalAlpha = 1;
-      if (++this.refogFrames < 240 && !reducedMotion()) {
+      this.refog = reducedMotion() ? 1 : Math.min(1, idle / REFOG_MS);
+      this.composite();
+      if (this.refog < 1) {
         this.raf = requestAnimationFrame(tick);
-      } else {
-        ctx.clearRect(0, 0, this.w, this.h);
-        ctx.drawImage(this.fog, 0, 0, this.w, this.h);
+        return;
       }
+      // fully fogged again: start the next wipe from a clean mask
+      this.mask.getContext('2d')!.clearRect(0, 0, this.mask.width, this.mask.height);
+      this.refog = 0;
     };
     this.raf = requestAnimationFrame(tick);
   }
+
+
 }
 
 let active: AvatarFx[] = [];
+let visibility: IntersectionObserver | null = null;
 
 function destroyAll() {
+  visibility?.disconnect();
+  visibility = null;
   active.forEach((fx) => fx.destroy());
   active = [];
 }
@@ -371,8 +417,33 @@ async function attach(box: HTMLElement) {
 
 function init() {
   destroyAll();
-  document.querySelectorAll<HTMLElement>('[data-avatar-fx]').forEach((box) => void attach(box));
+  if (document.documentElement.classList.contains('fx-no-avatar')) return;
+  const boxes = document.querySelectorAll<HTMLElement>('[data-avatar-fx]');
+  if (!('IntersectionObserver' in window)) {
+    boxes.forEach((box) => void attach(box));
+    return;
+  }
+  // Start each effect (and its intro animation) only once the photo is on screen,
+  // e.g. on phones the avatar can sit below the fold.
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        io.unobserve(entry.target);
+        void attach(entry.target as HTMLElement);
+      }
+    },
+    { threshold: 0.25 },
+  );
+  visibility = io;
+  boxes.forEach((box) => io.observe(box));
 }
 
 document.addEventListener('astro:page-load', init);
 document.addEventListener('astro:before-swap', destroyAll);
+document.addEventListener('kfolio:fx-change', (e) => {
+  const key = (e as CustomEvent<{ key: string }>).detail?.key;
+  if (key === 'avatar' || key === 'reduced') init();
+});
+
+export {};

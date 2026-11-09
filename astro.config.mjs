@@ -18,6 +18,12 @@ export default defineConfig({
       redirectToDefaultLocale: false
     }
   },
+  markdown: {
+    shikiConfig: {
+      themes: { light: 'github-light', dark: 'github-dark' },
+      defaultColor: false
+    }
+  },
   vite: {
     server: {
       fs: {

@@ -45,11 +45,13 @@ const t = useT(lang);
     <div
       class="avatar-badge-container"
       data-avatar-fx
+      tabindex="0"
+      aria-label={t('identity.photoFocus')}
       data-hint-pixel={t('identity.photoHover')}
       data-hint-halftone={t('identity.photoHover')}
       data-hint-frost={t('identity.photoWipe')}
     >
-      <Image src={avatar} alt={name} class="avatar-img" width={640} height={640} widths={[320, 640]} sizes="(max-width: 768px) 100vw, 320px" format="webp" quality={80} loading="eager" />
+      <Image src={avatar} alt={name} class="avatar-img" width={640} height={640} widths={[320, 640]} sizes="320px" format="webp" quality={80} loading="eager" />
       <canvas class="avatar-fx" aria-hidden="true"></canvas>
     </div>
 

@@ -16,7 +16,6 @@ contacts:
   bluesky: "bsky.app/profile/kyarick.bsky.social"
   instagram: "instagram.com/kYaRick"
   location: "Львів (з 2018), Україна"
-  experienceYears: 6
 
 toolsets:
   ai_models:
@@ -63,6 +62,25 @@ toolsets:
     - "pnpm"
     - "vitest"
     - "Git / CI/CD"
+  devops_net:
+    - "Адміністрування Linux-серверів"
+    - "Caddy (Reverse Proxy)"
+    - "Simple Server"
+    - "ZeroTier"
+    - "NetBird"
+    - "UrBackup"
+    - "Windows Server"
+    - "Self-hosting"
+  agents_automation:
+    - "Hermes-агенти"
+    - "Мультиагентні сценарії"
+    - "Claude Code / Codex"
+    - "Grok Bot"
+    - "Dots (OpenAI)"
+    - "Claude Duet"
+    - "Muse (Meta)"
+    - "MCP-сервери"
+    - "Бот-автоматизації"
   special_ops:
     - "MilTech та розмінування"
     - "Home Assistant"
@@ -72,8 +90,7 @@ toolsets:
 experience:
   - company: "Renesas Electronics"
     role: "Sr Application and Software Tools Engineer"
-    period: "Серпень 2023 - дотепер"
-    isCurrent: true
+    start: "2023-08"
     summary: "Підтримка та розвиток продуктів компанії, генерація технічної документації та тісна взаємодія з інженерами технічної підтримки та впровадження (FAE)."
     duties:
       - "Розвиток внутрішнього інструменту генерації технічної документації: розрахунок ланцюгів затримок."
@@ -81,6 +98,7 @@ experience:
       - "Адміністрування систем контролю версій та забезпечення регулярних релізів через CI/CD."
       - "Проведення код-рев'ю та оптимізація наявних інженерних модулів."
       - "Розробка нового функціоналу для внутрішніх інструментів."
+      - "Практичне адміністрування та DevOps: Linux-сервери, Caddy як reverse proxy, приватні оверлейні мережі на ZeroTier і NetBird."
     techStack:
       - "AvaloniaUI"
       - "MAUI"
@@ -95,11 +113,15 @@ experience:
       - "Unit Testing"
       - "CI/CD"
       - "Vue3"
+      - "DevOps"
+      - "Caddy"
+      - "ZeroTier"
+      - "NetBird"
 
   - company: "FORGE.AI"
     role: "QA Engineer (AI UI Client Testing)"
-    period: "Червень 2023 - Травень 2024"
-    isCurrent: false
+    start: "2023-06"
+    end: "2024-05"
     summary: "Тестування інтерфейсів взаємодії клієнтів із сучасними великими мовними моделями штучного інтелекту."
     duties:
       - "Тестування інтерфейсів взаємодії з мовними моделями GPT, Gemini та CodeLlama."
@@ -119,8 +141,8 @@ experience:
 
   - company: "Renesas Electronics"
     role: "Application Engineer (ESE)"
-    period: "Серпень 2021 - Серпень 2023"
-    isCurrent: false
+    start: "2021-08"
+    end: "2023-08"
     summary: "Розробка настільних інженерних застосунків, модулів розрахунку затримок та створення технічної документації."
     duties:
       - "Підтримка настільних рішень на базі WPF та .NET."
@@ -137,8 +159,8 @@ experience:
 
   - company: "Dialog Semiconductor"
     role: "Junior Application Engineer (ESE)"
-    period: "Квітень 2021 - Серпень 2021"
-    isCurrent: false
+    start: "2021-04"
+    end: "2021-08"
     summary: "Робота в середовищі візуального програмування та формування технічної документації для мікросхем GreenPAK."
     duties:
       - "Візуальне програмування та конфігурація матриць GreenPAK."
@@ -153,8 +175,8 @@ experience:
 
   - company: "Vodafone Ukraine"
     role: "Trainee Software Developer"
-    period: "Січень 2019 - Березень 2019"
-    isCurrent: false
+    start: "2019-01"
+    end: "2019-03"
     summary: "Налагодження та тестування внутрішнього програмного забезпечення для операторів зв'язку."
     duties:
       - "Тестування компонентів ПЗ за модульними чеклістами."
@@ -167,6 +189,29 @@ experience:
       - "Bash"
       - "PowerShell"
       - "Git"
+
+  - company: "СТО (Львів)"
+    role: "Системний адміністратор & DevOps"
+    start: "2018-03"
+    end: "2022-08"
+    summary: "Моя перша робота: підтримувати ІТ жвавої станції техобслуговування, від комп'ютерів на рецепції до сервера в підсобці. Паралельно з навчанням та першими інженерними посадами."
+    duties:
+      - "Обслуговування робочих станцій, периферії та локальної мережі для цехів і офісу."
+      - "Підтримка серверного обладнання: сховища, облікові записи, оновлення та перевірка стану."
+      - "Налаштування автоматичних резервних копій в UrBackup і регулярна перевірка відновлення."
+      - "Адміністрування 1С для обліку та складу запчастин. Пережив, нікому не раджу."
+      - "Автоматизація рутинних задач скриптами PowerShell, Bash та batch."
+      - "Перша лінія підтримки працівників: від зажованого принтера до мертвого диска о 8 ранку."
+    techStack:
+      - "System Administration"
+      - "Windows Server"
+      - "Linux"
+      - "Networking"
+      - "UrBackup"
+      - "1C"
+      - "PowerShell"
+      - "Bash"
+      - "Hardware Maintenance"
 
 education:
   - year: "2024"
@@ -201,13 +246,13 @@ aspirations:
     - area: "Web / UI"
       desc: "Дослідження Astro, AvaloniaUI та сучасних патернів побудови інтерфейсів."
     - area: "DevOps та системи"
-      desc: "Поглиблення експертизи у NixOS, віртуалізації (Proxmox/Hyper-V), контейнеризації та автоматизації робочих процесів."
+      desc: "Поглиблення експертизи у NixOS, віртуалізації (Proxmox/Hyper-V), контейнеризації, self-hosted мережах (Caddy, ZeroTier, NetBird) та автоматизації робочих процесів."
     - area: "Вбудовані системи"
       desc: "Практична робота з лінійкою GreenPAK (OpAmp, High Voltage, керування BLDC-двигунами)."
     - area: "Мови програмування"
       desc: "Активне вивчення Rust, Go та TinyGo для системного програмування."
   militaryProjects: "Брав участь у кількох чутливих проєктах. Писав первинну прошивку для комплексу розмінування. Також створював кросплатформний софт для автономних станцій керування БПЛА літакового типу та FPV."
-  personal: "Адмініструю домашню лабораторію HomeLab. Автоматизую дім через Home Assistant і запускаю локальні мовні моделі."
+  personal: "Адмініструю домашню лабораторію HomeLab. Автоматизую дім через Home Assistant, запускаю локальні мовні моделі, а Hermes-агенти та автоматизації (Grok Bot, Dots, Claude Duet, Muse) роблять за мене нудну частину роботи."
 
 humor:
   lightbulb:

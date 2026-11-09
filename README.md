@@ -1,13 +1,14 @@
-<p align="center">
+<div align="center">
   <img src=".github/assets/banner.svg" alt="kfolio: bilingual CV and engineering dispatches" width="100%">
-</p>
 
+[![Deploy to GitHub Pages](https://github.com/kYaRick/kfolio/actions/workflows/deploy.yml/badge.svg)](https://github.com/kYaRick/kfolio/actions/workflows/deploy.yml)
 [![Astro](https://img.shields.io/badge/Astro-7.x-BC52EE.svg?style=flat-square&logo=astro&logoColor=white)](https://astro.build)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.x-3178C6.svg?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Task Runner: just](https://img.shields.io/badge/Task_Runner-just-000000.svg?style=flat-square&logo=just&logoColor=white)](https://github.com/casey/just)
 [![pnpm](https://img.shields.io/badge/pnpm-9.x-F69220.svg?style=flat-square&logo=pnpm&logoColor=white)](https://pnpm.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-FCD34D.svg?style=flat-square)](LICENSE)
-[![Deploy to GitHub Pages](https://github.com/kYaRick/kfolio/actions/workflows/deploy.yml/badge.svg)](https://github.com/kYaRick/kfolio/actions/workflows/deploy.yml)
+
+</div>
 
 > Interactive bilingual CV and engineering dispatches styled after the **Hermes Agent** console (`kYa.Camilla.Agent`).
 

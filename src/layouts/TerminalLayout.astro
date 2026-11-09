@@ -8,6 +8,7 @@ import SiteHeader from '@/components/SiteHeader.astro';
 import AboutModal from '@/components/AboutModal.astro';
 import SettingsModal from '@/components/SettingsModal.astro';
 import InteractiveBackground from '@/components/InteractiveBackground.astro';
+import EdgePanel from '@/components/EdgePanel.astro';
 import Icon from '@/components/Icon.astro';
 
 interface Props {
@@ -47,6 +48,24 @@ const t = useT(lang);
       (function() {
         const savedTheme = localStorage.getItem('kfolio_theme') || 'hermes-dark';
         document.documentElement.setAttribute('data-theme', savedTheme);
+
+        // Effect switches (Settings > Effects). Keys match SettingsModal's `effects`.
+        const FX_DEFAULTS = { bg: true, interact: true, avatar: true, reduced: false };
+        const FX_STORAGE = { bg: 'kfolio_bg_fx', interact: 'kfolio_bg_interact', avatar: 'kfolio_avatar_fx', reduced: 'kfolio_reduce_motion' };
+        window.__fxGet = function (key) {
+          const v = localStorage.getItem(FX_STORAGE[key]);
+          return v === null ? FX_DEFAULTS[key] : v === 'true';
+        };
+        window.__fxSet = function (key, on) {
+          localStorage.setItem(FX_STORAGE[key], on ? 'true' : 'false');
+          window.__applyFx();
+        };
+        window.__applyFx = function () {
+          const root = document.documentElement;
+          root.classList.toggle('fx-no-avatar', !window.__fxGet('avatar'));
+          root.classList.toggle('fx-reduced', window.__fxGet('reduced'));
+        };
+        window.__applyFx();
       })();
     </script>
   </head>
@@ -75,12 +94,16 @@ const t = useT(lang);
       (function() {
         const bar = document.getElementById('page-loading-bar');
         if (bar && !window.__siteBootstrapped) {
+          // first load: blur the page and show the centred HUD until astro:page-load
+          document.documentElement.classList.add('is-navigating');
           bar.style.opacity = '1';
           bar.style.width = '45%';
           window.addEventListener('DOMContentLoaded', () => {
             if (bar.style.opacity === '1') bar.style.width = '85%';
           }, { once: true });
           window.addEventListener('load', () => {
+            // safety net: never leave the page blurred if astro:page-load did not fire
+            setTimeout(() => document.documentElement.classList.remove('is-navigating'), 400);
             bar.style.width = '100%';
             setTimeout(() => { bar.style.opacity = '0'; }, 200);
             setTimeout(() => {
@@ -146,8 +169,9 @@ const t = useT(lang);
     </button>
 
     <!-- Modals -->
+    <EdgePanel lang={lang} currentPage={currentPage} />
     <AboutModal lang={lang} />
-    <SettingsModal lang={lang} />
+    <SettingsModal lang={lang} currentPage={currentPage} />
 
     <!-- Global Client Script: Delegation & Navigation Hooks -->
     <script is:inline>
@@ -235,11 +259,10 @@ const t = useT(lang);
         const currentTheme = localStorage.getItem('kfolio_theme') || 'hermes-dark';
         syncThemeButtons(currentTheme);
 
-        // Sync Background switch
-        const toggleBgInput = document.getElementById('toggle-interactive-bg');
-        if (toggleBgInput) {
-          toggleBgInput.checked = localStorage.getItem('kfolio_bg_fx') !== 'false';
-        }
+        // Sync effect switches
+        document.querySelectorAll('[data-fx-toggle]').forEach((input) => {
+          input.checked = window.__fxGet(input.getAttribute('data-fx-toggle'));
+        });
 
         // Sync Reading Mode
         const savedReadingMode = localStorage.getItem('kfolio_reading_mode') === 'full';
@@ -288,6 +311,11 @@ const t = useT(lang);
           if (langLink) {
             const l = langLink.getAttribute('data-lang');
             if (l) localStorage.setItem('kfolio_lang', l);
+            // switching language from Settings: reopen Settings on the same tab after the swap
+            if (langLink.closest('#modal-settings')) {
+              const tab = document.querySelector('#modal-settings .settings-tab-btn.active');
+              sessionStorage.setItem('kfolio_reopen_settings', tab ? tab.getAttribute('data-target') : 'tab-appearance');
+            }
             return;
           }
 
@@ -373,11 +401,13 @@ const t = useT(lang);
 
         // Background Toggle input
         document.addEventListener('change', (e) => {
-          if (e.target.id === 'toggle-interactive-bg') {
-            if (typeof window.__setBgFx === 'function') {
-              window.__setBgFx(e.target.checked);
-            }
-          }
+          const key = e.target.getAttribute && e.target.getAttribute('data-fx-toggle');
+          if (!key) return;
+          const on = e.target.checked;
+          window.__fxSet(key, on);
+          if (key === 'bg' && typeof window.__setBgFx === 'function') window.__setBgFx(on);
+          if (key === 'interact' && typeof window.__setBgInteract === 'function') window.__setBgInteract(on);
+          document.dispatchEvent(new CustomEvent('kfolio:fx-change', { detail: { key, on } }));
         });
 
         // Escape Key Modal Close
@@ -468,6 +498,8 @@ const t = useT(lang);
           const btn = document.getElementById('btn-back-to-top');
           if (btn) {
             btn.classList.toggle('visible', scrollY > 180);
+            // same threshold drives the "Top" item in the mobile Edge panel
+            document.documentElement.classList.toggle('has-scrolled', scrollY > 180);
             const lbl = document.getElementById('btt-percent-label');
             if (lbl) lbl.textContent = percent + '%';
 
@@ -498,6 +530,7 @@ const t = useT(lang);
         if (bar) bar.style.width = '90%';
         const savedTheme = localStorage.getItem('kfolio_theme') || 'hermes-dark';
         document.documentElement.setAttribute('data-theme', savedTheme);
+        if (typeof window.__applyFx === 'function') window.__applyFx();
 
         // Synchronize HUD loading text with current language
         const pill = document.getElementById('nav-loading-pill');
@@ -513,6 +546,18 @@ const t = useT(lang);
       document.addEventListener('astro:page-load', () => {
         triggerLoadFinish();
         syncSiteState();
+
+        const reopenTab = sessionStorage.getItem('kfolio_reopen_settings');
+        if (reopenTab) {
+          sessionStorage.removeItem('kfolio_reopen_settings');
+          const modal = document.getElementById('modal-settings');
+          const tabBtn = document.querySelector(`#modal-settings .settings-tab-btn[data-target="${reopenTab}"]`);
+          if (modal) {
+            modal.classList.add('open', 'no-anim');
+            if (tabBtn) tabBtn.click();
+            setTimeout(() => modal.classList.remove('no-anim'), 50);
+          }
+        }
         if (typeof window.__updateScrollMetrics === 'function') {
           window.__updateScrollMetrics();
         }

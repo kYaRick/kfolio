@@ -1,0 +1,273 @@
+---
+// Mobile quick panel (Samsung Edge style): a `>` tab on the left edge (clear of the
+// scrollbar on the right) that can be
+// dragged up and down; a tap slides out a column with the header and footer actions.
+// Action buttons proxy clicks to the (hidden) header/footer buttons, so the logic
+// lives in one place (TerminalLayout's delegated handlers).
+import Icon from './Icon.astro';
+import { useT } from '@/i18n/ui';
+import { pageUrl, type Lang, type Page } from '@/lib/site';
+
+interface Props {
+  lang: Lang;
+  currentPage: Page;
+}
+
+const { lang, currentPage } = Astro.props;
+const t = useT(lang);
+---
+
+<div class="edge" data-edge>
+  <button
+    type="button"
+    class="edge-handle"
+    aria-label={t('edge.open')}
+    aria-expanded="false"
+    aria-controls="edge-panel"
+  >
+    <span class="edge-grip" aria-hidden="true">&gt;</span>
+  </button>
+
+  <div class="edge-scrim" data-edge-close aria-hidden="true"></div>
+
+  <nav id="edge-panel" class="edge-panel" aria-label={t('edge.title')} inert>
+    <a href={pageUrl(lang)} class={`edge-item ${currentPage === 'cv' ? 'active' : ''}`}>
+      <Icon name="file-text" size={18} />
+      <span>{t('edge.cv')}</span>
+    </a>
+    <a href={pageUrl(lang, 'blog')} class={`edge-item ${currentPage === 'blog' ? 'active' : ''}`}>
+      <Icon name="pen-tool" size={18} />
+      <span>{t('nav.blogShort')}</span>
+    </a>
+    <button type="button" class="edge-item" data-proxy="btn-open-settings">
+      <Icon name="settings" size={18} />
+      <span>{t('nav.settings')}</span>
+    </button>
+    <button type="button" class="edge-item" data-proxy="btn-toggle-reading-mode">
+      <Icon name="eye" size={18} />
+      <span>{t('edge.expand')}</span>
+    </button>
+    <button type="button" class="edge-item" data-proxy="btn-export-pdf">
+      <Icon name="printer" size={18} />
+      <span>{t('nav.printShort')}</span>
+    </button>
+
+    <div class="edge-sep" aria-hidden="true"></div>
+
+    <div class="edge-langs">
+      <a href={pageUrl('uk', currentPage)} data-lang="uk" class={lang === 'uk' ? 'active' : ''} title="Українська">UA</a>
+      <a href={pageUrl('en', currentPage)} data-lang="en" class={lang === 'en' ? 'active' : ''} title="English">EN</a>
+    </div>
+
+    <a href="https://github.com/kYaRick/kfolio" target="_blank" rel="noopener noreferrer" class="edge-item">
+      <Icon name="github" size={18} />
+      <span>GitHub</span>
+    </a>
+    <button type="button" class="edge-item" data-proxy="btn-open-about">
+      <Icon name="info" size={18} />
+      <span>{t('footer.about')}</span>
+    </button>
+    <button type="button" class="edge-item" data-proxy="btn-back-to-top">
+      <Icon name="chevron-up" size={18} />
+      <span>{t('edge.top')}</span>
+    </button>
+  </nav>
+</div>
+
+<style is:global>
+  .edge {
+    display: none;
+    --edge-y: 50vh;
+  }
+
+  @media (max-width: 768px) {
+    .edge {
+      display: block;
+    }
+  }
+
+  @media print {
+    .edge {
+      display: none !important;
+    }
+  }
+
+  .edge-handle {
+    position: fixed;
+    left: 0;
+    top: var(--edge-y);
+    transform: translateY(-50%);
+    z-index: 160;
+    width: 30px;
+    height: 64px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: grab;
+    touch-action: none;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .edge-handle:active {
+    cursor: grabbing;
+  }
+
+  /* terminal-prompt tab: a `>` glyph on a slim panel hugging the left edge */
+  .edge-grip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 46px;
+    border: 1px solid var(--border-color);
+    border-left: 0;
+    border-radius: 0 10px 10px 0;
+    background: color-mix(in srgb, var(--bg-header) 88%, transparent);
+    color: var(--accent-gold);
+    font-family: var(--font-mono);
+    font-size: 15px;
+    font-weight: 800;
+    box-shadow: 0 0 14px color-mix(in srgb, var(--accent-gold) 22%, transparent);
+    opacity: 0.85;
+    transition: opacity 0.2s ease, width 0.2s ease;
+  }
+
+  .edge-handle:focus-visible .edge-grip,
+  .edge.is-dragging .edge-grip {
+    opacity: 1;
+    width: 24px;
+  }
+
+  .edge.is-open .edge-handle {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .edge-scrim {
+    position: fixed;
+    inset: 0;
+    z-index: 170;
+    background: rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .edge.is-open .edge-scrim {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .edge-panel {
+    position: fixed;
+    left: 10px;
+    top: var(--edge-panel-top, 50vh);
+    z-index: 180;
+    width: 84px;
+    max-height: calc(100vh - 24px);
+    overflow-y: auto;
+    padding: 8px 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    background: color-mix(in srgb, var(--bg-header) 92%, transparent);
+    border: 1px solid var(--border-color);
+    border-radius: 22px;
+    box-shadow: var(--shadow-panel);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    transform: translateX(-120%);
+    transition: transform 0.24s cubic-bezier(0.2, 0.8, 0.2, 1);
+    touch-action: pan-y; /* vertical scroll stays native, horizontal swipe closes */
+  }
+
+  .edge.is-open .edge-panel {
+    transform: translateX(0);
+  }
+
+  .edge-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 8px 2px;
+    border: 1px solid transparent;
+    border-radius: 14px;
+    background: transparent;
+    color: var(--text-main);
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    line-height: 1.2;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .edge-item:active,
+  .edge-item:focus-visible {
+    background: var(--tag-bg);
+  }
+
+  .edge-item.active,
+  html.mode-full-reading .edge-item[data-proxy='btn-toggle-reading-mode'] {
+    color: var(--accent-gold);
+    background: var(--tag-bg);
+    border-color: var(--tag-border);
+  }
+
+  /* "Top" only makes sense once the page is scrolled */
+  html:not(.has-scrolled) .edge-item[data-proxy='btn-back-to-top'] {
+    display: none;
+  }
+
+  .edge-sep {
+    height: 1px;
+    margin: 4px 8px;
+    background: var(--border-subtle);
+  }
+
+  .edge-langs {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    padding: 2px 0 4px;
+  }
+
+  .edge-langs a {
+    flex: 1;
+    text-align: center;
+    padding: 6px 0;
+    border-radius: 10px;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-muted);
+    font-size: 10.5px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .edge-langs a.active {
+    background: var(--accent-gold);
+    border-color: var(--accent-gold);
+    color: var(--btn-active-text);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .edge-panel,
+    .edge-scrim {
+      transition: none;
+    }
+  }
+
+  html.fx-reduced .edge-panel,
+  html.fx-reduced .edge-scrim {
+    transition: none;
+  }
+</style>
+
+<script>
+  import '@/scripts/edge-panel';
+</script>

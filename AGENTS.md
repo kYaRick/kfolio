@@ -18,8 +18,9 @@
 | `src/content/blog/` | Engineering dispatches and markdown blog posts. |
 | `src/content.config.ts` | Zod schemas for CV and blog collections. |
 | `src/i18n/ui.ts` | UI strings dictionary (`en` is the source of truth, `uk` must define every key). |
-| `src/lib/cv.ts` | `getCv(lang)` loader for CV data. |
-| `src/scripts/` | Client scripts bundled by Astro (`avatar-fx.ts`: theme-aware avatar effect). |
+| `src/lib/cv.ts` | `getCv(lang)`: CV data with jobs sorted newest first and `experienceYears` derived from the earliest `start`. |
+| `src/lib/dates.ts` | `YYYY-MM` career dates: localized period labels (`Intl`) and years since. |
+| `src/scripts/` | Client scripts bundled by Astro (`avatar-fx.ts`: theme-aware avatar effect; `edge-panel.ts`: mobile quick panel). |
 | `src/assets/` | Images processed by `astro:assets` (avatar). |
 | `src/lib/site.ts` | Languages (`LANGS`, `Lang`), base-aware URLs (`url`, `pageUrl`, `postUrl`), post helpers. |
 | `src/components/` | Astro UI components for terminal layout and bento cards. |
