@@ -67,6 +67,10 @@ const t = useT(lang);
       <Icon name="info" size={18} />
       <span>{t('footer.about')}</span>
     </button>
+    <button type="button" class="edge-item" data-dog-toggle>
+      <Icon name="wand" size={18} />
+      <span>{t('settings.dogFx')}</span>
+    </button>
     <button type="button" class="edge-item" data-proxy="btn-back-to-top">
       <Icon name="chevron-up" size={18} />
       <span>{t('edge.top')}</span>
@@ -103,16 +107,11 @@ const t = useT(lang);
     padding: 0;
     border: 0;
     background: transparent;
-    cursor: grab;
-    touch-action: none;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: flex-start;
     -webkit-tap-highlight-color: transparent;
-  }
-
-  .edge-handle:active {
-    cursor: grabbing;
   }
 
   /* terminal-prompt tab: a `>` glyph on a slim panel hugging the left edge */
@@ -135,8 +134,7 @@ const t = useT(lang);
     transition: opacity 0.2s ease, width 0.2s ease;
   }
 
-  .edge-handle:focus-visible .edge-grip,
-  .edge.is-dragging .edge-grip {
+  .edge-handle:focus-visible .edge-grip {
     opacity: 1;
     width: 24px;
   }
@@ -213,7 +211,8 @@ const t = useT(lang);
   }
 
   .edge-item.active,
-  html.mode-full-reading .edge-item[data-proxy='btn-toggle-reading-mode'] {
+  html.mode-full-reading .edge-item[data-proxy='btn-toggle-reading-mode'],
+  html.fx-dog-on .edge-item[data-dog-toggle] {
     color: var(--accent-gold);
     background: var(--tag-bg);
     border-color: var(--tag-border);
