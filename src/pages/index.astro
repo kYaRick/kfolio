@@ -11,12 +11,13 @@ const fallback = pageUrl(DEFAULT_LANG);
   <head>
     <meta charset="UTF-8" />
     <title>Redirecting to kfolio...</title>
-    <link rel="icon" type="image/x-icon" href={url('favicon.ico')} />
+    <link rel="icon" type="image/svg+xml" href={url('favicon.svg')} />
+    <link rel="alternate icon" type="image/x-icon" href={url('favicon.ico')} />
     <script is:inline define:vars={{ base, langs: LANGS, fallbackLang: DEFAULT_LANG }}>
       const saved = localStorage.getItem('kfolio_lang');
       const browser = (navigator.language || '').toLowerCase().slice(0, 2);
       const target = [saved, browser].find((l) => langs.includes(l)) || fallbackLang;
-      window.location.replace(base + target + '/');
+      window.location.replace(base + target + '/' + window.location.search + window.location.hash);
     </script>
     <noscript><meta http-equiv="refresh" content={`0;url=${fallback}`} /></noscript>
   </head>

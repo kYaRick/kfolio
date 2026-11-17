@@ -694,6 +694,13 @@ html.fx-no-avatar .avatar-badge-container[data-fx] {
 .avatar-badge-container[data-fx='halftone']::after { content: '> ' attr(data-hint-halftone); }
 .avatar-badge-container[data-fx='frost']::after { content: '> ' attr(data-hint-frost); }
 
+@media (hover: none) {
+  .avatar-badge-container[data-fx='pixel']::after,
+  .avatar-badge-container[data-fx='halftone']::after {
+    content: '> ' attr(data-hint-touch);
+  }
+}
+
 .avatar-badge-container.is-revealed::after {
   opacity: 0;
 }

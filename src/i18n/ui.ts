@@ -46,6 +46,8 @@ const en = {
   'settings.cursorFxDesc': 'Particles grow and link to the cursor; snowflakes drift away from it',
   'settings.avatarFx': 'Photo Effect',
   'settings.avatarFxDesc': 'Mosaic or halftone photo that decodes on hover; fogged glass to wipe in winter',
+  'settings.dogFx': 'Pixel Assistant',
+  'settings.dogFxDesc': 'Pixel companion in the corner with site tips and Hacker News highlights',
   'settings.reducedMotion': 'Reduce Motion',
   'settings.reducedMotionDesc': 'Stop particle movement, intro animations and slow fogging',
   'settings.pdfTitle': 'A4 PDF Resume Generator',
@@ -66,6 +68,7 @@ const en = {
   'identity.platform': 'Platform:',
   'identity.location': 'Location:',
   'identity.photoHover': 'hover to decode',
+  'identity.photoHold': 'hold to decode',
   'identity.photoWipe': 'wipe the glass',
   'identity.photoFocus': 'Profile photo (revealed on focus)',
   'contacts.title': 'DIRECT ENDPOINTS',
@@ -119,6 +122,18 @@ const en = {
   'notFound.home': 'Main CV',
   'notFound.blog': 'Engineering blog',
   'notFound.report': 'Report an issue',
+
+  // Pixel dog assistant
+  'dog.open': 'Open pixel assistant',
+  'dog.hide': 'Hide assistant',
+  'dog.next': 'Next tip',
+  'dog.history': 'History',
+  'dog.historyTitle': 'Assistant Log',
+  'dog.clear': 'Clear',
+  'dog.empty': 'No saved tips yet.',
+  'dog.hnDetails': 'Open on Hacker News',
+  'dog.badgeSite': 'SITE TIP',
+  'dog.badgeHn': 'HACKER NEWS',
 } as const;
 
 export type UiKey = keyof typeof en;
@@ -162,6 +177,8 @@ const uk: Record<UiKey, string> = {
   'settings.cursorFxDesc': 'Частинки збільшуються і тягнуться до курсора, сніжинки від нього відлітають',
   'settings.avatarFx': 'Ефект фото',
   'settings.avatarFxDesc': 'Мозаїка або растр, що проявляється при наведенні; узимку запітніле скло, яке можна протерти',
+  'settings.dogFx': 'Піксельний помічник',
+  'settings.dogFxDesc': 'Піксельний песик у кутку з порадами по сайту та стрічкою Hacker News',
   'settings.reducedMotion': 'Менше анімацій',
   'settings.reducedMotionDesc': 'Зупиняє рух частинок, вступні анімації та повільне запотівання',
   'settings.pdfTitle': 'Експорт резюме у PDF (A4)',
@@ -181,6 +198,7 @@ const uk: Record<UiKey, string> = {
   'identity.platform': 'Платформа:',
   'identity.location': 'Локація:',
   'identity.photoHover': 'наведіть, щоб проявити',
+  'identity.photoHold': 'утримуйте, щоб проявити',
   'identity.photoWipe': 'протріть скло',
   'identity.photoFocus': 'Фото профілю (проявляється при фокусі)',
   'contacts.title': 'ПРЯМІ КОНТАКТИ',
@@ -234,6 +252,17 @@ const uk: Record<UiKey, string> = {
   'notFound.home': 'Головна (Резюме)',
   'notFound.blog': 'Інженерний блог',
   'notFound.report': 'Повідомити про проблему',
+
+  'dog.open': 'Відкрити піксельного помічника',
+  'dog.hide': 'Сховати помічника',
+  'dog.next': 'Ще порада',
+  'dog.history': 'Історія',
+  'dog.historyTitle': 'Журнал підказок',
+  'dog.clear': 'Очистити',
+  'dog.empty': 'Збережених підказок ще немає.',
+  'dog.hnDetails': 'Перейти на Hacker News',
+  'dog.badgeSite': 'ПОРАДА',
+  'dog.badgeHn': 'HACKER NEWS',
 };
 
 const ui: Record<Lang, Record<UiKey, string>> = { en, uk };

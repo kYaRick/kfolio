@@ -40,13 +40,23 @@ function init() {
   };
 
   const onPanelClick = (e: MouseEvent) => {
-    const item = (e.target as HTMLElement).closest<HTMLElement>('[data-proxy]');
+    const target = e.target as HTMLElement;
+    const item = target.closest<HTMLElement>('[data-proxy]');
     if (item) {
       setOpen(false);
       document.getElementById(item.dataset.proxy ?? '')?.click();
       return;
     }
-    if ((e.target as HTMLElement).closest('a')) setOpen(false);
+    if (target.closest('[data-dog-toggle]')) {
+      setOpen(false);
+      const w = window as Window & { __fxGet?: (k: string) => boolean; __fxSet?: (k: string, on: boolean) => void };
+      if (w.__fxGet && w.__fxSet) {
+        w.__fxSet('dog', !w.__fxGet('dog'));
+        window.dispatchEvent(new CustomEvent('kfolio:fx-change', { detail: { key: 'dog' } }));
+      }
+      return;
+    }
+    if (target.closest('a')) setOpen(false);
   };
 
   const onScrim = () => setOpen(false);

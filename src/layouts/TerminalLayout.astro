@@ -9,6 +9,7 @@ import AboutModal from '@/components/AboutModal.astro';
 import SettingsModal from '@/components/SettingsModal.astro';
 import InteractiveBackground from '@/components/InteractiveBackground.astro';
 import EdgePanel from '@/components/EdgePanel.astro';
+import PixelDog from '@/components/PixelDog.astro';
 import Icon from '@/components/Icon.astro';
 
 interface Props {
@@ -32,7 +33,10 @@ const t = useT(lang);
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/x-icon" href={url('favicon.ico')} />
+    <link id="site-favicon" rel="icon" type="image/svg+xml" href={url('favicon.svg')} />
+    <link rel="alternate icon" type="image/x-icon" href={url('favicon.ico')} />
+    <link rel="alternate" type="application/json" title="kfolio Agent Endpoint (JSON)" href={url('api/agent.json')} />
+    <link rel="alternate" type="text/plain" title="kfolio Agent Guide (llms.txt)" href={url('llms.txt')} />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <meta name="description" content={description} />
@@ -46,12 +50,51 @@ const t = useT(lang);
     <!-- Anti-flicker Theme Init Script -->
     <script is:inline>
       (function() {
+        const FAVICON_PALETTES = {
+          'hermes-dark': { bg: '#0D1117', border: '#3D3219', accent: '#FFD700', cursor: '#FFBF00', dot: '#7EE787' },
+          'fluent-dark': { bg: '#141417', border: '#0078d4', accent: '#60cdff', cursor: '#70d6ff', dot: '#4ade80' },
+          'hermes-light': { bg: '#ffffff', border: '#cbd5e1', accent: '#0369a1', cursor: '#0284c7', dot: '#16a34a' },
+          'seasonal-winter': { bg: '#061526', border: '#0284c7', accent: '#38bdf8', cursor: '#7dd3fc', dot: '#34d399' },
+        };
+
+        window.__updateFavicon = function (theme) {
+          const link = document.getElementById('site-favicon');
+          if (!link) return;
+          const p = FAVICON_PALETTES[theme] || FAVICON_PALETTES['hermes-dark'];
+          const svg =
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">' +
+            `<rect x="2" y="2" width="28" height="28" rx="7" fill="${p.bg}" stroke="${p.border}" stroke-width="2"/>` +
+            `<circle cx="23.5" cy="8.5" r="2" fill="${p.dot}"/>` +
+            `<path d="M8.5 11.5 L15.5 16.5 L8.5 21.5" fill="none" stroke="${p.accent}" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>` +
+            `<rect x="17" y="19.5" width="7.5" height="2.8" rx="1" fill="${p.cursor}"/>` +
+            '</svg>';
+          link.href = 'data:image/svg+xml,' + encodeURIComponent(svg);
+        };
+
+        const params = new URLSearchParams(window.location.search);
+        const paramTheme = params.get('theme');
+        if (paramTheme && Object.prototype.hasOwnProperty.call(FAVICON_PALETTES, paramTheme)) {
+          localStorage.setItem('kfolio_theme', paramTheme);
+        }
+
+        const paramMode = params.get('mode') || params.get('reading');
+        if (paramMode === 'full' || paramMode === 'compact') {
+          localStorage.setItem('kfolio_reading_mode', paramMode);
+        }
+
         const savedTheme = localStorage.getItem('kfolio_theme') || 'hermes-dark';
         document.documentElement.setAttribute('data-theme', savedTheme);
+        window.__updateFavicon(savedTheme);
 
         // Effect switches (Settings > Effects). Keys match SettingsModal's `effects`.
-        const FX_DEFAULTS = { bg: true, interact: true, avatar: true, reduced: false };
-        const FX_STORAGE = { bg: 'kfolio_bg_fx', interact: 'kfolio_bg_interact', avatar: 'kfolio_avatar_fx', reduced: 'kfolio_reduce_motion' };
+        const FX_DEFAULTS = { bg: true, interact: true, avatar: true, reduced: false, dog: false };
+        const FX_STORAGE = {
+          bg: 'kfolio_bg_fx',
+          interact: 'kfolio_bg_interact',
+          avatar: 'kfolio_avatar_fx',
+          reduced: 'kfolio_reduce_motion',
+          dog: 'kfolio_dog_fx',
+        };
         window.__fxGet = function (key) {
           const v = localStorage.getItem(FX_STORAGE[key]);
           return v === null ? FX_DEFAULTS[key] : v === 'true';
@@ -64,7 +107,16 @@ const t = useT(lang);
           const root = document.documentElement;
           root.classList.toggle('fx-no-avatar', !window.__fxGet('avatar'));
           root.classList.toggle('fx-reduced', window.__fxGet('reduced'));
+          root.classList.toggle('fx-dog-on', window.__fxGet('dog'));
         };
+
+        const paramDog = params.get('dog');
+        if (paramDog === '1' || paramDog === 'true') {
+          localStorage.setItem(FX_STORAGE.dog, 'true');
+        } else if (paramDog === '0' || paramDog === 'false') {
+          localStorage.setItem(FX_STORAGE.dog, 'false');
+        }
+
         window.__applyFx();
       })();
     </script>
@@ -170,6 +222,7 @@ const t = useT(lang);
 
     <!-- Modals -->
     <EdgePanel lang={lang} currentPage={currentPage} />
+    <PixelDog lang={lang} />
     <AboutModal lang={lang} />
     <SettingsModal lang={lang} currentPage={currentPage} />
 
@@ -214,7 +267,23 @@ const t = useT(lang);
         if (!theme) return;
         document.documentElement.setAttribute('data-theme', theme);
         localStorage.setItem('kfolio_theme', theme);
+        if (typeof window.__updateFavicon === 'function') window.__updateFavicon(theme);
         syncThemeButtons(theme);
+      }
+
+      function stripUrlParams(keys) {
+        if (!window.location.search) return;
+        const url = new URL(window.location.href);
+        let changed = false;
+        keys.forEach((k) => {
+          if (url.searchParams.has(k)) {
+            url.searchParams.delete(k);
+            changed = true;
+          }
+        });
+        if (changed) {
+          window.history.replaceState(null, '', url.pathname + url.search + url.hash);
+        }
       }
 
       function syncThemeButtons(theme) {
@@ -345,6 +414,7 @@ const t = useT(lang);
           if (e.target.closest('#close-about-btn') || e.target.id === 'modal-about') {
             const m = document.getElementById('modal-about');
             if (m) m.classList.remove('open');
+            stripUrlParams(['about']);
             return;
           }
 
@@ -356,6 +426,7 @@ const t = useT(lang);
           if (e.target.closest('#close-settings-btn') || e.target.id === 'modal-settings') {
             const m = document.getElementById('modal-settings');
             if (m) m.classList.remove('open');
+            stripUrlParams(['settings']);
             return;
           }
 
@@ -417,6 +488,7 @@ const t = useT(lang);
             const mSettings = document.getElementById('modal-settings');
             if (mAbout) mAbout.classList.remove('open');
             if (mSettings) mSettings.classList.remove('open');
+            stripUrlParams(['settings', 'about']);
           }
         });
 
@@ -511,6 +583,7 @@ const t = useT(lang);
               const baseBottom = window.innerWidth <= 600 ? 16 : 24;
               const lift = Math.max(0, overlap - baseBottom + 12);
               btn.style.setProperty('--btt-lift', `-${lift}px`);
+              document.documentElement.style.setProperty('--btt-lift', `-${lift}px`);
             }
           }
         }
@@ -530,6 +603,7 @@ const t = useT(lang);
         if (bar) bar.style.width = '90%';
         const savedTheme = localStorage.getItem('kfolio_theme') || 'hermes-dark';
         document.documentElement.setAttribute('data-theme', savedTheme);
+        if (typeof window.__updateFavicon === 'function') window.__updateFavicon(savedTheme);
         if (typeof window.__applyFx === 'function') window.__applyFx();
 
         // Synchronize HUD loading text with current language
@@ -556,6 +630,28 @@ const t = useT(lang);
             modal.classList.add('open', 'no-anim');
             if (tabBtn) tabBtn.click();
             setTimeout(() => modal.classList.remove('no-anim'), 50);
+          }
+        } else {
+          const urlParams = new URLSearchParams(window.location.search);
+          if (urlParams.has('settings')) {
+            const raw = (urlParams.get('settings') || '').toLowerCase();
+            const tabMap = {
+              appearance: 'tab-appearance',
+              theme: 'tab-appearance',
+              effects: 'tab-effects',
+              export: 'tab-export',
+              pdf: 'tab-export',
+            };
+            const targetTab = tabMap[raw] || 'tab-appearance';
+            const modal = document.getElementById('modal-settings');
+            const tabBtn = document.querySelector(`#modal-settings .settings-tab-btn[data-target="${targetTab}"]`);
+            if (modal) {
+              modal.classList.add('open');
+              if (tabBtn) tabBtn.click();
+            }
+          } else if (urlParams.has('about')) {
+            const aboutModal = document.getElementById('modal-about');
+            if (aboutModal) aboutModal.classList.add('open');
           }
         }
         if (typeof window.__updateScrollMetrics === 'function') {

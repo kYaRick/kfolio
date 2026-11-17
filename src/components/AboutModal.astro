@@ -26,7 +26,12 @@ const t = useT(lang);
     <div class="modal-body">
       <div style="display: flex; align-items: center; gap: 1rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.85rem;">
         <div style="background: var(--bg-subtle); border: 1.5px solid var(--border-color); border-radius: 8px; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; padding: 6px;">
-          <img src={url('favicon.ico')} alt="kfolio favicon" style="width: 36px; height: 36px; object-fit: contain;" />
+          <svg viewBox="0 0 32 32" width="38" height="38" aria-hidden="true">
+            <rect x="2" y="2" width="28" height="28" rx="7" fill="var(--bg-base)" stroke="var(--border-color)" stroke-width="2" />
+            <circle cx="23.5" cy="8.5" r="2" fill="var(--status-ok)" />
+            <path d="M8.5 11.5 L15.5 16.5 L8.5 21.5" fill="none" stroke="var(--accent-gold)" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" />
+            <rect x="17" y="19.5" width="7.5" height="2.8" rx="1" fill="var(--accent-amber)" />
+          </svg>
         </div>
         <div>
           <h2 style="font-size: 1.2rem; color: var(--text-white); margin: 0;">{t('about.heading')}</h2>
@@ -54,6 +59,14 @@ const t = useT(lang);
         <div class="kv-row">
           <span class="kv-key">Hosting:</span>
           <span class="kv-value">GitHub Pages via GitHub Actions</span>
+        </div>
+        <div class="kv-row">
+          <span class="kv-key">Agent API:</span>
+          <span class="kv-value">
+            <a href={url('llms.txt')} target="_blank" rel="noopener noreferrer" style="color: var(--accent-gold);">llms.txt</a>
+            {' · '}
+            <a href={url('api/agent.json')} target="_blank" rel="noopener noreferrer" style="color: var(--accent-gold);">api/agent.json</a>
+          </span>
         </div>
         <div class="kv-row">
           <span class="kv-key">License:</span>

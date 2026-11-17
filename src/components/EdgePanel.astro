@@ -67,6 +67,10 @@ const t = useT(lang);
       <Icon name="info" size={18} />
       <span>{t('footer.about')}</span>
     </button>
+    <button type="button" class="edge-item" data-dog-toggle>
+      <Icon name="wand" size={18} />
+      <span>{t('settings.dogFx')}</span>
+    </button>
     <button type="button" class="edge-item" data-proxy="btn-back-to-top">
       <Icon name="chevron-up" size={18} />
       <span>{t('edge.top')}</span>
@@ -207,7 +211,8 @@ const t = useT(lang);
   }
 
   .edge-item.active,
-  html.mode-full-reading .edge-item[data-proxy='btn-toggle-reading-mode'] {
+  html.mode-full-reading .edge-item[data-proxy='btn-toggle-reading-mode'],
+  html.fx-dog-on .edge-item[data-dog-toggle] {
     color: var(--accent-gold);
     background: var(--tag-bg);
     border-color: var(--tag-border);
