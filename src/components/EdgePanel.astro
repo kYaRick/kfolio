@@ -103,16 +103,11 @@ const t = useT(lang);
     padding: 0;
     border: 0;
     background: transparent;
-    cursor: grab;
-    touch-action: none;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: flex-start;
     -webkit-tap-highlight-color: transparent;
-  }
-
-  .edge-handle:active {
-    cursor: grabbing;
   }
 
   /* terminal-prompt tab: a `>` glyph on a slim panel hugging the left edge */
@@ -135,8 +130,7 @@ const t = useT(lang);
     transition: opacity 0.2s ease, width 0.2s ease;
   }
 
-  .edge-handle:focus-visible .edge-grip,
-  .edge.is-dragging .edge-grip {
+  .edge-handle:focus-visible .edge-grip {
     opacity: 1;
     width: 24px;
   }

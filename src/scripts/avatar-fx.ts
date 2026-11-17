@@ -105,9 +105,11 @@ class AvatarFx {
 
     if (!this.locked) {
       box.addEventListener('pointermove', this.onMove);
-      box.addEventListener('pointerdown', this.onMove);
-      box.addEventListener('pointerleave', this.onLeave);
-      box.addEventListener('click', this.onTap);
+      box.addEventListener('pointerdown', this.onDown);
+      box.addEventListener('pointerup', this.onRelease);
+      box.addEventListener('pointercancel', this.onRelease);
+      box.addEventListener('pointerleave', this.onRelease);
+      box.addEventListener('contextmenu', this.onContextMenu);
     }
     this.render(true);
   }
@@ -117,9 +119,11 @@ class AvatarFx {
     this.resizeObs.disconnect();
     this.themeObs.disconnect();
     this.box.removeEventListener('pointermove', this.onMove);
-    this.box.removeEventListener('pointerdown', this.onMove);
-    this.box.removeEventListener('pointerleave', this.onLeave);
-    this.box.removeEventListener('click', this.onTap);
+    this.box.removeEventListener('pointerdown', this.onDown);
+    this.box.removeEventListener('pointerup', this.onRelease);
+    this.box.removeEventListener('pointercancel', this.onRelease);
+    this.box.removeEventListener('pointerleave', this.onRelease);
+    this.box.removeEventListener('contextmenu', this.onContextMenu);
   }
 
   private get pitch() {
@@ -351,14 +355,24 @@ class AvatarFx {
     ctx.globalCompositeOperation = 'source-over';
   }
 
-  private onLeave = () => {
-    this.last = null;
+  private onDown = (e: PointerEvent) => {
+    if (this.mode === 'frost') {
+      this.onMove(e);
+      return;
+    }
+    if (e.pointerType !== 'mouse') {
+      this.box.classList.add('is-revealed');
+    }
   };
 
-  /** Touch devices have no hover: a tap toggles the reveal. */
-  private onTap = () => {
+  private onRelease = () => {
+    this.last = null;
+    this.box.classList.remove('is-revealed');
+  };
+
+  private onContextMenu = (e: MouseEvent) => {
     if (this.mode !== 'frost' && matchMedia('(hover: none)').matches) {
-      this.box.classList.toggle('is-revealed');
+      e.preventDefault();
     }
   };
 
