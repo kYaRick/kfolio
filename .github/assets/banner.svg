@@ -1,36 +1,43 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" width="1280" height="640" role="img" aria-label="kfolio: bilingual CV and engineering dispatches">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" width="1280" height="640" role="img" aria-label="kfolio: bilingual CV, engineering dispatches and agent API">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#161b24"/>
       <stop offset="1" stop-color="#07090d"/>
     </linearGradient>
     <radialGradient id="glowGold" cx=".5" cy=".5" r=".5">
-      <stop offset="0" stop-color="#FFD700" stop-opacity=".20"/>
+      <stop offset="0" stop-color="#FFD700" stop-opacity=".18"/>
       <stop offset="1" stop-color="#FFD700" stop-opacity="0"/>
     </radialGradient>
     <radialGradient id="glowBlue" cx=".5" cy=".5" r=".5">
-      <stop offset="0" stop-color="#58A6FF" stop-opacity=".20"/>
+      <stop offset="0" stop-color="#58A6FF" stop-opacity=".18"/>
       <stop offset="1" stop-color="#58A6FF" stop-opacity="0"/>
     </radialGradient>
+    <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="1" fill="#FFFFFF" fill-opacity=".045"/>
+    </pattern>
   </defs>
 
   <rect width="1280" height="640" fill="url(#bg)"/>
-  <ellipse cx="220" cy="120" rx="460" ry="320" fill="url(#glowGold)"/>
-  <ellipse cx="1100" cy="600" rx="520" ry="320" fill="url(#glowBlue)"/>
+  <rect width="1280" height="640" fill="url(#dots)"/>
+  <ellipse cx="220" cy="110" rx="460" ry="300" fill="url(#glowGold)"/>
+  <ellipse cx="1100" cy="610" rx="520" ry="300" fill="url(#glowBlue)"/>
 
-  <!-- terminal window, Hermes CLI welcome screen -->
-  <rect x="80" y="100" width="1120" height="440" rx="16" fill="#0D1117" fill-opacity=".92" stroke="#3D3219" stroke-width="1.5"/>
-  <path d="M 80 140 V 116 Q 80 100 96 100 H 1184 Q 1200 100 1200 116 V 140 Z" fill="#141820"/>
-  <line x1="80" y1="140" x2="1200" y2="140" stroke="#3D3219"/>
-  <text x="640" y="125" text-anchor="middle" fill="#8B8682" font-family="JetBrains Mono, Cascadia Code, Consolas, ui-monospace, monospace" font-size="13">kyarick@hypervisor: ~/kfolio</text>
+  <!-- terminal window -->
+  <rect x="80" y="72" width="1120" height="496" rx="16" fill="#0D1117" fill-opacity=".92" stroke="#3D3219" stroke-width="1.5"/>
+  <path d="M 80 112 V 88 Q 80 72 96 72 H 1184 Q 1200 72 1200 88 V 112 Z" fill="#141820"/>
+  <line x1="80" y1="112" x2="1200" y2="112" stroke="#3D3219"/>
+  <circle cx="108" cy="92" r="4" fill="#3FB950"><animate attributeName="fill-opacity" values="1;.35;1" dur="2.4s" repeatCount="indefinite"/></circle>
+  <text x="122" y="97" fill="#8B8682" font-family="JetBrains Mono, Cascadia Code, Consolas, ui-monospace, monospace" font-size="12">online</text>
+  <text x="640" y="97" text-anchor="middle" fill="#8B8682" font-family="JetBrains Mono, Cascadia Code, Consolas, ui-monospace, monospace" font-size="13">kyarick@hypervisor: ~/kfolio</text>
   <g stroke="#8B8682" stroke-width="1.4" stroke-linecap="round" fill="none" opacity=".7">
-    <line x1="1124" y1="120" x2="1134" y2="120"/>
-    <rect x="1146" y="115" width="10" height="10" rx="1.5"/>
-    <line x1="1168" y1="115" x2="1178" y2="125"/>
-    <line x1="1178" y1="115" x2="1168" y2="125"/>
+    <line x1="1124" y1="92" x2="1134" y2="92"/>
+    <rect x="1146" y="87" width="10" height="10" rx="1.5"/>
+    <line x1="1168" y1="87" x2="1178" y2="97"/>
+    <line x1="1178" y1="87" x2="1168" y2="97"/>
   </g>
 
-  <!-- kYa emblem as a gold mosaic -->
+  <!-- kYa emblem + KFOLIO logotype -->
+  <g transform="translate(0 -46)">
   <g>
     <rect x="209" y="227.9" width="4.1" height="4.1" rx="1.2" fill="#FFE033"/>
     <rect x="214.1" y="227.9" width="4.1" height="4.1" rx="1.2" fill="#FFE033" fill-opacity="0.9"/>
@@ -881,8 +888,6 @@
     <rect x="250" y="392.1" width="4.1" height="4.1" rx="1.2" fill="#CD7F32" fill-opacity="0.6"/>
     <rect x="255.1" y="392.1" width="4.1" height="4.1" rx="1.2" fill="#CD7F32" fill-opacity="0.7"/>
   </g>
-
-  <!-- KFOLIO in ANSI Shadow block letters -->
   <g aria-label="KFOLIO">
     <g fill="none" stroke="#B8860B" stroke-opacity=".5" stroke-width="1.2" stroke-linejoin="miter">
       <polyline points="450,205.1 458.1,205.1 458.1,220"/>
@@ -1189,11 +1194,48 @@
     <rect x="957" y="292" width="13.4" height="24.4" fill="#E68A00"/>
     <rect x="970" y="292" width="13.4" height="24.4" fill="#E68A00"/>
   </g>
+  </g>
 
-  <text x="426" y="384" fill="#FFBF00" font-family="JetBrains Mono, Cascadia Code, Consolas, ui-monospace, monospace" font-size="24" font-weight="600">Bilingual CV &amp; engineering dispatches.</text>
-  <text x="426" y="414" fill="#8B949E" font-family="JetBrains Mono, Cascadia Code, Consolas, ui-monospace, monospace" font-size="15">.NET · Linux · AI engineering · HomeLab · <tspan fill="#58A6FF">Lviv, Ukraine</tspan></text>
+  <text x="426" y="334" fill="#FFBF00" font-family="JetBrains Mono, Cascadia Code, Consolas, ui-monospace, monospace" font-size="24" font-weight="600">Bilingual CV &amp; engineering dispatches.</text>
+  <text x="426" y="364" fill="#8B949E" font-family="JetBrains Mono, Cascadia Code, Consolas, ui-monospace, monospace" font-size="15">.NET · Linux · AI engineering · HomeLab · <tspan fill="#58A6FF">Lviv, Ukraine</tspan></text>
 
-  <line x1="132" y1="456" x2="1148" y2="456" stroke="#3D3219" stroke-dasharray="4 5"/>
-  <text x="132" y="494" xml:space="preserve" font-family="JetBrains Mono, Cascadia Code, Consolas, ui-monospace, monospace" font-size="16"><tspan fill="#FFBF00">kfolio:~$</tspan><tspan fill="#FFF8DC"> just dev</tspan></text>
-  <rect x="314" y="481" width="9" height="17" fill="#FFD700" fill-opacity=".85"/>
+  <line x1="132" y1="404" x2="1148" y2="404" stroke="#3D3219" stroke-dasharray="4 5"/>
+
+  <!-- agent API call -->
+  <text x="132" y="446" xml:space="preserve" font-family="JetBrains Mono, Cascadia Code, Consolas, ui-monospace, monospace" font-size="16"><tspan fill="#FFBF00">kfolio:~$</tspan><tspan fill="#FFF8DC"> curl -s kyarick.github.io/kfolio/llm.json</tspan></text>
+  <text x="132" y="478" xml:space="preserve" font-family="JetBrains Mono, Cascadia Code, Consolas, ui-monospace, monospace" font-size="14" fill="#8B949E">{ <tspan fill="#58A6FF">"schema_version"</tspan>: <tspan fill="#E6EDF3">"1.0"</tspan>, <tspan fill="#58A6FF">"endpoint_type"</tspan>: <tspan fill="#E6EDF3">"agent-oriented-cv-api"</tspan>, <tspan fill="#58A6FF">"endpoints"</tspan>: { ... } }</text>
+  <text x="132" y="510" xml:space="preserve" font-family="JetBrains Mono, Cascadia Code, Consolas, ui-monospace, monospace" font-size="16"><tspan fill="#FFBF00">kfolio:~$</tspan></text>
+  <rect x="232" y="497" width="9" height="17" fill="#FFD700" fill-opacity=".85">
+    <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;.5;.5;1" dur="1.1s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- theme palette -->
+  <g font-family="JetBrains Mono, Cascadia Code, Consolas, ui-monospace, monospace" font-size="12" fill="#8B8682">
+    <rect x="132" y="534" width="12" height="12" rx="3" fill="#FFD700"/><text x="152" y="544">hermes-dark</text>
+    <rect x="268" y="534" width="12" height="12" rx="3" fill="#60CDFF"/><text x="288" y="544">fluent-dark</text>
+    <rect x="404" y="534" width="12" height="12" rx="3" fill="#0369A1"/><text x="424" y="544">hermes-light</text>
+    <rect x="548" y="534" width="12" height="12" rx="3" fill="#38BDF8"/><text x="568" y="544">seasonal-winter</text>
+  </g>
+
+  <!-- pixel assistant -->
+  <g transform="translate(1072 452) scale(5)" shape-rendering="crispEdges">
+    <g>
+      <animateTransform attributeName="transform" type="rotate" values="0 11 12;-14 11 12;0 11 12;10 11 12;0 11 12" dur="1.2s" repeatCount="indefinite"/>
+      <rect x="11" y="11" width="1" height="1" fill="#e6a23c"/><rect x="12" y="10" width="1" height="1" fill="#e6a23c"/><rect x="13" y="9" width="1" height="1" fill="#c87f1e"/>
+    </g>
+    <rect x="4" y="8" width="7" height="5" fill="#e6a23c"/><rect x="6" y="8" width="3" height="4" fill="#fff3d6"/><rect x="5" y="7" width="5" height="1" fill="#58a6ff"/>
+    <rect x="4" y="13" width="2" height="1" fill="#fff3d6"/><rect x="9" y="13" width="2" height="1" fill="#fff3d6"/>
+    <rect x="3" y="2" width="1" height="5" fill="#c87f1e"/><rect x="2" y="3" width="1" height="4" fill="#c87f1e"/><rect x="11" y="2" width="1" height="5" fill="#c87f1e"/><rect x="12" y="3" width="1" height="4" fill="#c87f1e"/>
+    <rect x="4" y="2" width="7" height="5" fill="#e6a23c"/><rect x="5" y="1" width="5" height="1" fill="#e6a23c"/>
+    <g fill="#1b1f24">
+      <rect x="5" y="4" width="1" height="1"/><rect x="9" y="4" width="1" height="1"/>
+      <animate attributeName="opacity" values="1;1;0;1" keyTimes="0;.92;.96;1" dur="4s" repeatCount="indefinite"/>
+    </g>
+    <rect x="6" y="5" width="3" height="2" fill="#fff3d6"/><rect x="7" y="5" width="1" height="1" fill="#1b1f24"/>
+  </g>
+  <g font-family="JetBrains Mono, Cascadia Code, Consolas, ui-monospace, monospace">
+    <rect x="908" y="430" width="152" height="30" rx="8" fill="#141820" stroke="#3D3219"/>
+    <path d="M 1040 459.5 L 1068 472 L 1052 459.5" fill="#141820" stroke="#3D3219" stroke-linejoin="round"/>
+    <text x="984" y="450" text-anchor="middle" font-size="12" fill="#FFF8DC">sudo hire --now</text>
+  </g>
 </svg>

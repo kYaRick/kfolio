@@ -26,7 +26,8 @@
 | `src/components/` | Astro UI components for terminal layout and bento cards. |
 | `src/layouts/` | Terminal shell and master layouts. |
 | `src/styles/` | `theme.css` (custom properties) and `terminal.css` (terminal styles). |
-| `.github/assets/` | README banner (not deployed). |
+| `.github/assets/` | README media, not deployed: `banner.svg` (source), `social-preview.png`, screenshots, `demo.gif`. |
+| `tools/capture-media.mjs` | Regenerates README media from a running preview (`just media`; Edge/Chromium over CDP + ffmpeg). |
 | `justfile` | Task runner for local work and CI (`just ci`). |
 
 ---

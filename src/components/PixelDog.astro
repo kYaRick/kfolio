@@ -9,12 +9,29 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useT(lang);
+const pack = (l: Lang) => {
+  const tr = useT(l);
+  return JSON.stringify({
+    open: tr('dog.open'),
+    hide: tr('dog.hide'),
+    next: tr('dog.next'),
+    history: tr('dog.history'),
+    historyTitle: tr('dog.historyTitle'),
+    clear: tr('dog.clear'),
+    empty: tr('dog.empty'),
+    hnDetails: tr('dog.hnDetails'),
+    badgeSite: tr('dog.badgeSite'),
+    badgeHn: tr('dog.badgeHn'),
+  });
+};
 ---
 
 <div
   class="dog-widget"
   data-pixel-dog
   data-lang={lang}
+  data-i18n-en={pack('en')}
+  data-i18n-uk={pack('uk')}
   data-badge-site={t('dog.badgeSite')}
   data-badge-hn={t('dog.badgeHn')}
   data-hn-details={t('dog.hnDetails')}
@@ -29,14 +46,14 @@ const t = useT(lang);
     aria-label={t('dog.open')}
   >
     <svg viewBox="0 0 16 16" width="20" height="20" shape-rendering="crispEdges" aria-hidden="true">
-      <rect x="3" y="4" width="2" height="3" fill="var(--accent-amber)" />
-      <rect x="11" y="4" width="2" height="3" fill="var(--accent-amber)" />
-      <rect x="5" y="3" width="6" height="5" fill="var(--accent-gold)" />
-      <rect x="6" y="5" width="1" height="1" fill="var(--bg-header)" />
-      <rect x="9" y="5" width="1" height="1" fill="var(--bg-header)" />
-      <rect x="7" y="6" width="2" height="2" fill="var(--text-white)" />
-      <rect x="7" y="6" width="2" height="1" fill="var(--bg-header)" />
-      <rect x="5" y="9" width="6" height="4" fill="var(--accent-gold)" />
+      <rect x="3" y="4" width="2" height="3" fill="#c87f1e" />
+      <rect x="11" y="4" width="2" height="3" fill="#c87f1e" />
+      <rect x="5" y="3" width="6" height="5" fill="#e6a23c" />
+      <rect x="6" y="5" width="1" height="1" fill="#1b1f24" />
+      <rect x="9" y="5" width="1" height="1" fill="#1b1f24" />
+      <rect x="7" y="6" width="2" height="2" fill="#fff3d6" />
+      <rect x="7" y="6" width="2" height="1" fill="#1b1f24" />
+      <rect x="5" y="9" width="6" height="4" fill="#e6a23c" />
       <rect x="6" y="8" width="4" height="1" fill="var(--accent-blue, #58a6ff)" />
     </svg>
   </button>
@@ -77,6 +94,8 @@ const t = useT(lang);
         <span class="dog-think-dot d3"></span>
       </div>
 
+      <span class="dog-emote" data-dog-emote aria-hidden="true"></span>
+
       <button
         type="button"
         class="dog-power-btn"
@@ -98,49 +117,68 @@ const t = useT(lang);
       <svg viewBox="0 0 16 16" width="48" height="48" shape-rendering="crispEdges" aria-hidden="true" class="dog-svg">
         <!-- Tail -->
         <g class="dog-tail">
-          <rect x="11" y="11" width="1" height="1" fill="var(--accent-gold)" />
-          <rect x="12" y="10" width="1" height="1" fill="var(--accent-gold)" />
-          <rect x="13" y="9" width="1" height="1" fill="var(--accent-amber)" />
+          <rect x="11" y="11" width="1" height="1" fill="#e6a23c" />
+          <rect x="12" y="10" width="1" height="1" fill="#e6a23c" />
+          <rect x="13" y="9" width="1" height="1" fill="#c87f1e" />
         </g>
 
         <!-- Body -->
-        <rect x="4" y="8" width="7" height="5" fill="var(--accent-gold)" />
-        <rect x="6" y="8" width="3" height="4" fill="var(--text-white)" />
+        <rect x="4" y="8" width="7" height="5" fill="#e6a23c" />
+        <rect x="6" y="8" width="3" height="4" fill="#fff3d6" />
         <!-- Collar -->
         <rect x="5" y="7" width="5" height="1" fill="var(--accent-blue, #58a6ff)" />
 
         <!-- Paws -->
         <g class="dog-paws">
-          <rect class="dog-paw-l" x="4" y="13" width="2" height="1" fill="var(--text-white)" />
-          <rect class="dog-paw-r" x="9" y="13" width="2" height="1" fill="var(--text-white)" />
+          <rect class="dog-paw-l" x="4" y="13" width="2" height="1" fill="#fff3d6" />
+          <rect class="dog-paw-r" x="9" y="13" width="2" height="1" fill="#fff3d6" />
+          <!-- Winter socks (visible in seasonal-winter when outfit includes socks) -->
+          <g class="dog-winter-socks">
+            <rect class="dog-paw-l" x="4" y="12" width="2" height="1" fill="#f8fafc" />
+            <rect class="dog-paw-l" x="4" y="13" width="2" height="1" fill="#ef4444" />
+            <rect class="dog-paw-r" x="9" y="12" width="2" height="1" fill="#f8fafc" />
+            <rect class="dog-paw-r" x="9" y="13" width="2" height="1" fill="#ef4444" />
+          </g>
         </g>
 
-        <!-- Scratching hind leg (visible during scratch animation) -->
+        <!-- Scratching / marking hind leg -->
         <g class="dog-scratch-leg">
-          <rect x="2" y="10" width="2" height="2" fill="var(--accent-amber)" />
-          <rect x="2" y="9" width="1" height="1" fill="var(--text-white)" />
+          <rect x="2" y="10" width="2" height="2" fill="#c87f1e" />
+          <rect x="2" y="9" width="1" height="1" fill="#fff3d6" />
+        </g>
+
+        <!-- Playful pixel puddle (visible only during top-mark) -->
+        <g class="dog-mark-drop">
+          <rect x="1" y="13" width="2" height="1" fill="var(--accent-gold)" />
+          <rect x="0" y="14" width="3" height="1" fill="var(--accent-blue, #58a6ff)" />
         </g>
 
         <!-- Head group (tilts during scratch, bobs on walk/speak) -->
         <g class="dog-head">
           <!-- Floppy ears -->
           <g class="dog-ears">
-            <rect x="3" y="2" width="1" height="5" fill="var(--accent-amber)" />
-            <rect x="2" y="3" width="1" height="4" fill="var(--accent-amber)" />
-            <rect x="11" y="2" width="1" height="5" fill="var(--accent-amber)" />
-            <rect x="12" y="3" width="1" height="4" fill="var(--accent-amber)" />
+            <rect x="3" y="2" width="1" height="5" fill="#c87f1e" />
+            <rect x="2" y="3" width="1" height="4" fill="#c87f1e" />
+            <rect x="11" y="2" width="1" height="5" fill="#c87f1e" />
+            <rect x="12" y="3" width="1" height="4" fill="#c87f1e" />
           </g>
           <!-- Head base -->
-          <rect x="4" y="2" width="7" height="5" fill="var(--accent-gold)" />
-          <rect x="5" y="1" width="5" height="1" fill="var(--accent-gold)" />
+          <rect x="4" y="2" width="7" height="5" fill="#e6a23c" />
+          <rect x="5" y="1" width="5" height="1" fill="#e6a23c" />
           <!-- Eyes -->
           <g class="dog-eyes">
-            <rect x="5" y="4" width="1" height="1" fill="var(--bg-header)" />
-            <rect x="9" y="4" width="1" height="1" fill="var(--bg-header)" />
+            <rect x="5" y="4" width="1" height="1" fill="#1b1f24" />
+            <rect x="9" y="4" width="1" height="1" fill="#1b1f24" />
           </g>
           <!-- Snout & nose -->
-          <rect x="6" y="5" width="3" height="2" fill="var(--text-white)" />
-          <rect x="7" y="5" width="1" height="1" fill="var(--bg-header)" />
+          <rect x="6" y="5" width="3" height="2" fill="#fff3d6" />
+          <rect x="7" y="5" width="1" height="1" fill="#1b1f24" />
+          <!-- Winter beanie (visible in seasonal-winter when outfit includes hat) -->
+          <g class="dog-winter-hat">
+            <rect x="7" y="0" width="2" height="1" fill="#f8fafc" />
+            <rect x="5" y="1" width="5" height="1" fill="#ef4444" />
+            <rect x="4" y="2" width="7" height="1" fill="#f8fafc" />
+          </g>
         </g>
       </svg>
     </button>
@@ -255,6 +293,21 @@ const t = useT(lang);
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .dog-winter-hat,
+  .dog-winter-socks {
+    display: none;
+  }
+
+  html[data-theme='seasonal-winter'] [data-winter-outfit='hat-socks'] .dog-winter-hat,
+  html[data-theme='seasonal-winter'] [data-winter-outfit='hat'] .dog-winter-hat {
+    display: inline;
+  }
+
+  html[data-theme='seasonal-winter'] [data-winter-outfit='hat-socks'] .dog-winter-socks,
+  html[data-theme='seasonal-winter'] [data-winter-outfit='socks'] .dog-winter-socks {
+    display: inline;
   }
 
   .dog-power-btn {
@@ -469,7 +522,7 @@ const t = useT(lang);
     -webkit-tap-highlight-color: transparent;
   }
 
-  .dog-sprite-btn:hover {
+  .dog-sprite-btn[data-anim='idle']:hover {
     transform: translateY(-2px);
   }
 
@@ -481,6 +534,7 @@ const t = useT(lang);
 
   .dog-svg {
     overflow: visible;
+    transform-origin: 47% 50%;
     filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
   }
 
@@ -494,9 +548,35 @@ const t = useT(lang);
     animation: dog-blink 4.2s steps(1, end) infinite;
   }
 
-  .dog-scratch-leg {
+  .dog-scratch-leg,
+  .dog-mark-drop {
     opacity: 0;
     transform-origin: 3px 11px;
+  }
+
+  .dog-emote {
+    position: absolute;
+    bottom: calc(100% + 4px);
+    right: 0;
+    padding: 2px 6px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-header);
+    color: var(--accent-gold);
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    font-weight: 700;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    box-shadow: var(--shadow-panel);
+  }
+
+  .dog-sprite-wrap.show-emote .dog-emote {
+    opacity: 1;
+    transform: translateY(0);
   }
 
   .dog-head {
@@ -512,20 +592,81 @@ const t = useT(lang);
     animation: dog-head-scratch 0.5s steps(2, end) infinite;
   }
 
+  /* Smooth walk: single round-trip on button, crisp flip on SVG, bob on head/paws */
   .dog-sprite-btn[data-anim='walk'] {
-    animation: dog-walk-patrol 3.6s ease-in-out infinite;
-  }
-
-  .dog-sprite-btn[data-anim='walk'] .dog-paw-l {
-    animation: dog-paw-step 0.35s steps(2, end) infinite;
-  }
-
-  .dog-sprite-btn[data-anim='walk'] .dog-paw-r {
-    animation: dog-paw-step 0.35s steps(2, end) infinite 0.17s;
+    animation: dog-walk-patrol 3.4s ease-in-out 1 forwards;
   }
 
   .dog-sprite-btn[data-anim='walk'] .dog-svg {
-    animation: dog-walk-bob 0.35s steps(2, end) infinite;
+    animation: dog-walk-face 3.4s linear 1 forwards;
+  }
+
+  .dog-sprite-btn[data-anim='walk'] .dog-paw-l {
+    animation: dog-paw-step 0.32s steps(2, end) infinite;
+  }
+
+  .dog-sprite-btn[data-anim='walk'] .dog-paw-r {
+    animation: dog-paw-step 0.32s steps(2, end) infinite 0.16s;
+  }
+
+  .dog-sprite-btn[data-anim='walk'] .dog-head {
+    animation: dog-walk-bob 0.32s steps(2, end) infinite;
+  }
+
+  /* Back-to-top button interaction: run right, jump-boop or mark, return */
+  .dog-sprite-btn[data-anim='top-boop'] {
+    animation: dog-top-boop 2.8s ease-in-out 1 forwards;
+  }
+
+  .dog-sprite-btn[data-anim='top-boop'] .dog-svg {
+    animation: dog-top-face 2.8s linear 1 forwards;
+  }
+
+  .dog-sprite-btn[data-anim='top-boop'] .dog-paw-l {
+    animation: dog-paw-step 0.28s steps(2, end) infinite;
+  }
+
+  .dog-sprite-btn[data-anim='top-boop'] .dog-paw-r {
+    animation: dog-paw-step 0.28s steps(2, end) infinite 0.14s;
+  }
+
+  .dog-sprite-btn[data-anim='top-mark'] {
+    animation: dog-top-visit 2.8s ease-in-out 1 forwards;
+  }
+
+  .dog-sprite-btn[data-anim='top-mark'] .dog-svg {
+    animation: dog-top-face 2.8s linear 1 forwards;
+  }
+
+  .dog-sprite-btn[data-anim='top-mark'] .dog-scratch-leg {
+    animation: dog-mark-leg 2.8s linear 1 forwards;
+  }
+
+  .dog-sprite-btn[data-anim='top-mark'] .dog-mark-drop {
+    animation: dog-mark-puddle 2.8s ease-out 1 forwards;
+  }
+
+  /* Nap on top of the Back-to-Top button until it disappears */
+  .dog-sprite-btn[data-anim='top-nap'] {
+    animation: dog-top-jump-on 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  .dog-sprite-btn[data-anim='top-nap'] .dog-svg {
+    transform: translateY(3px) scaleY(0.88);
+    transition: transform 0.25s ease 0.45s;
+  }
+
+  .dog-sprite-btn[data-anim='top-nap'] .dog-eyes {
+    animation: none;
+    transform: scaleY(0.2);
+  }
+
+  .dog-sprite-btn[data-anim='top-nap'] .dog-tail {
+    animation: dog-wag 2.2s steps(2, end) infinite;
+  }
+
+  .dog-sprite-btn[data-anim='top-hop-off'] {
+    animation: dog-top-jump-off 0.45s ease-out forwards;
   }
 
   .dog-sprite-btn[data-anim='speak'] .dog-svg {
@@ -558,9 +699,56 @@ const t = useT(lang);
 
   @keyframes dog-walk-patrol {
     0%, 100% { transform: translateX(0); }
-    45% { transform: translateX(-36px); }
-    50% { transform: translateX(-36px) scaleX(-1); }
-    95% { transform: translateX(0) scaleX(-1); }
+    46%, 54% { transform: translateX(-32px); }
+  }
+
+  @keyframes dog-walk-face {
+    0%, 49.9% { transform: scaleX(1); }
+    50%, 96.9% { transform: scaleX(-1); }
+    97%, 100% { transform: scaleX(1); }
+  }
+
+  @keyframes dog-top-visit {
+    0%, 100% { transform: translateX(0); }
+    24%, 68% { transform: translateX(18px); }
+  }
+
+  @keyframes dog-top-boop {
+    0%, 100% { transform: translate(0, 0); }
+    24% { transform: translate(18px, 0); }
+    35% { transform: translate(18px, -10px); }
+    45% { transform: translate(18px, 0); }
+    55% { transform: translate(18px, -8px); }
+    66% { transform: translate(18px, 0); }
+  }
+
+  @keyframes dog-top-face {
+    0%, 69.9% { transform: scaleX(-1); }
+    70%, 100% { transform: scaleX(1); }
+  }
+
+  @keyframes dog-mark-leg {
+    0%, 25.9% { opacity: 0; transform: rotate(0deg); }
+    26%, 64% { opacity: 1; transform: rotate(32deg) translateY(-1px); }
+    64.1%, 100% { opacity: 0; transform: rotate(0deg); }
+  }
+
+  @keyframes dog-mark-puddle {
+    0%, 32% { opacity: 0; transform: scale(0.5); }
+    38%, 60% { opacity: 0.95; transform: scale(1); }
+    66%, 100% { opacity: 0; transform: scale(1); }
+  }
+
+  @keyframes dog-top-jump-on {
+    0% { transform: translate(0, 0); }
+    48% { transform: translate(28px, -48px); }
+    100% { transform: translate(54px, -34px); }
+  }
+
+  @keyframes dog-top-jump-off {
+    0% { transform: translate(0, -34px); }
+    40% { transform: translate(0, -42px); }
+    100% { transform: translate(0, 0); }
   }
 
   @keyframes dog-paw-step {
@@ -584,23 +772,10 @@ const t = useT(lang);
     100% { transform: scale(1); }
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .dog-tail,
-    .dog-eyes,
-    .dog-scratch-leg,
-    .dog-head,
-    .dog-sprite-btn,
-    .dog-paw-l,
-    .dog-paw-r,
-    .dog-svg,
-    .dog-bubble.is-popping {
-      animation: none !important;
-    }
-  }
-
   html.fx-reduced .dog-tail,
   html.fx-reduced .dog-eyes,
   html.fx-reduced .dog-scratch-leg,
+  html.fx-reduced .dog-mark-drop,
   html.fx-reduced .dog-head,
   html.fx-reduced .dog-sprite-btn,
   html.fx-reduced .dog-paw-l,

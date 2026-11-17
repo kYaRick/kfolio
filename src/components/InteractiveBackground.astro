@@ -39,9 +39,7 @@
     let animId = null;
     let isEnabled = localStorage.getItem('kfolio_bg_fx') !== 'false';
     let interact = localStorage.getItem('kfolio_bg_interact') !== 'false';
-    const isReduced = () =>
-      document.documentElement.classList.contains('fx-reduced') ||
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isReduced = () => document.documentElement.classList.contains('fx-reduced');
 
     const mouse = { x: -1000, y: -1000, active: false };
 
@@ -188,6 +186,7 @@
     function draw() {
       if (!isEnabled) {
         ctx.clearRect(0, 0, width, height);
+        animId = null;
         return;
       }
 

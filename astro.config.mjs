@@ -9,7 +9,7 @@ const root = fileURLToPath(new URL('.', import.meta.url)).replace(/\\/g, '/');
 export default defineConfig({
   site: 'https://kyarick.github.io',
   base: '/kfolio',
-  trailingSlash: 'always',
+  trailingSlash: 'ignore',
   i18n: {
     defaultLocale: 'en',
     locales: ['en', 'uk'],

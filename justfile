@@ -31,3 +31,7 @@ clean:
 
 # Everything CI runs
 ci: check build
+
+# Regenerate README media in .github/assets (needs Edge/Chromium + ffmpeg, preview on :4321)
+media:
+    node tools/capture-media.mjs

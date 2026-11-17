@@ -35,6 +35,7 @@ const t = useT(lang);
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link id="site-favicon" rel="icon" type="image/svg+xml" href={url('favicon.svg')} />
     <link rel="alternate icon" type="image/x-icon" href={url('favicon.ico')} />
+    <link rel="alternate" type="application/json" title="kfolio Agent Index (JSON)" href={url('llm.json')} />
     <link rel="alternate" type="application/json" title="kfolio Agent Endpoint (JSON)" href={url('api/agent.json')} />
     <link rel="alternate" type="text/plain" title="kfolio Agent Guide (llms.txt)" href={url('llms.txt')} />
     <meta name="generator" content={Astro.generator} />
@@ -87,7 +88,7 @@ const t = useT(lang);
         window.__updateFavicon(savedTheme);
 
         // Effect switches (Settings > Effects). Keys match SettingsModal's `effects`.
-        const FX_DEFAULTS = { bg: true, interact: true, avatar: true, reduced: false, dog: false };
+        const FX_DEFAULTS = { bg: true, interact: true, avatar: true, reduced: false, dog: true };
         const FX_STORAGE = {
           bg: 'kfolio_bg_fx',
           interact: 'kfolio_bg_interact',
@@ -575,13 +576,16 @@ const t = useT(lang);
             const lbl = document.getElementById('btt-percent-label');
             if (lbl) lbl.textContent = percent + '%';
 
-            // Dynamic Footer Avoidance: Elevate button smoothly above footer when in view
+            // Dynamic Footer Avoidance: Elevate only when footer horizontally overlaps the bottom-right widgets
             const footer = document.querySelector('.site-footer');
             if (footer) {
               const footerRect = footer.getBoundingClientRect();
-              const overlap = window.innerHeight - footerRect.top;
+              const dogOn = document.documentElement.classList.contains('fx-dog-on');
+              const widgetsLeftEdge = window.innerWidth - (dogOn ? 148 : 88);
+              const overlapsHorizontally = footerRect.right > widgetsLeftEdge;
+              const overlapY = window.innerHeight - footerRect.top;
               const baseBottom = window.innerWidth <= 600 ? 16 : 24;
-              const lift = Math.max(0, overlap - baseBottom + 12);
+              const lift = overlapsHorizontally ? Math.max(0, overlapY - baseBottom + 12) : 0;
               btn.style.setProperty('--btt-lift', `-${lift}px`);
               document.documentElement.style.setProperty('--btt-lift', `-${lift}px`);
             }

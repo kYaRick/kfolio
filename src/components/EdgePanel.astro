@@ -63,19 +63,20 @@ const t = useT(lang);
       <Icon name="github" size={18} />
       <span>GitHub</span>
     </a>
-    <button type="button" class="edge-item" data-proxy="btn-open-about">
-      <Icon name="info" size={18} />
-      <span>{t('footer.about')}</span>
-    </button>
     <button type="button" class="edge-item" data-dog-toggle>
       <Icon name="wand" size={18} />
       <span>{t('settings.dogFx')}</span>
     </button>
-    <button type="button" class="edge-item" data-proxy="btn-back-to-top">
-      <Icon name="chevron-up" size={18} />
-      <span>{t('edge.top')}</span>
+    <button type="button" class="edge-item" data-proxy="btn-open-about">
+      <Icon name="info" size={18} />
+      <span>{t('footer.about')}</span>
     </button>
   </nav>
+
+  <button type="button" class="edge-item edge-top-btn" data-proxy="btn-back-to-top" inert>
+    <Icon name="chevron-up" size={18} />
+    <span>{t('edge.top')}</span>
+  </button>
 </div>
 
 <style is:global>
@@ -111,6 +112,7 @@ const t = useT(lang);
     display: flex;
     align-items: center;
     justify-content: flex-start;
+    touch-action: none;
     -webkit-tap-highlight-color: transparent;
   }
 
@@ -218,8 +220,29 @@ const t = useT(lang);
     border-color: var(--tag-border);
   }
 
-  /* "Top" only makes sense once the page is scrolled */
-  html:not(.has-scrolled) .edge-item[data-proxy='btn-back-to-top'] {
+  /* Detached "Top" button at bottom-left, sliding in/out with the open menu */
+  .edge-top-btn {
+    position: fixed;
+    left: 10px;
+    bottom: 16px;
+    z-index: 180;
+    width: 84px;
+    padding: 8px 4px;
+    background: color-mix(in srgb, var(--bg-header) 92%, transparent);
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    box-shadow: var(--shadow-panel);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    transform: translateX(-120%);
+    transition: transform 0.24s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .edge.is-open .edge-top-btn {
+    transform: translateX(0);
+  }
+
+  html:not(.has-scrolled) .edge-top-btn {
     display: none;
   }
 
@@ -256,12 +279,14 @@ const t = useT(lang);
 
   @media (prefers-reduced-motion: reduce) {
     .edge-panel,
+    .edge-top-btn,
     .edge-scrim {
       transition: none;
     }
   }
 
   html.fx-reduced .edge-panel,
+  html.fx-reduced .edge-top-btn,
   html.fx-reduced .edge-scrim {
     transition: none;
   }
